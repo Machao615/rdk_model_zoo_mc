@@ -54,7 +54,7 @@ This directory contains:
 │   ├── README.md                       # Documentation (English)
 │   └── README_cn.md                    # Documentation (Chinese)
 ├── runtime                             # Inference samples
-│   ├── cpp                             # C++ inference implementation (TODO)
+│   ├── cpp                             # C++ inference reference
 │   └── python                          # Python inference sample
 │       ├── main.py                     # Python entry script
 │       ├── convnext.py                 # ConvNeXt wrapper implementation

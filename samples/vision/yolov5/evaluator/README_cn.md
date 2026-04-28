@@ -28,7 +28,7 @@
 
 ## 验证方式
 
-迁移后的 Python sample 通过以下方式验证：
+Python sample 通过以下方式验证：
 
 ```bash
 cd ../runtime/python
@@ -60,7 +60,7 @@ python3 main.py --model-path ../../model/yolov5s_tag_v2.0_detect_640x640_bayese_
 - `BPU 吞吐` 表示对应模型在 RDK X5 上的参考吞吐能力。
 - `Python 后处理` 表示 Python 后处理路径的参考 CPU 侧耗时。
 - `参数量` 表示原始 FP32 模型的参数规模。
-- 当前迁移版 sample 保留了原始 YOLOv5 的 anchor-based 解码协议。
+- 当前 sample 保留 YOLOv5 的 anchor-based 解码协议。
 
 ## 参考材料
 

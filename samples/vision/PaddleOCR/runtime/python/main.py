@@ -1,430 +1,163 @@
-import os
-import numpy as np
-import cv2
+# Copyright (c) 2026 D-Robotics Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+PaddleOCR Inference Entry Script.
+
+This script demonstrates the standard BPU inference pipeline for PaddleOCR
+on a single input image, following the RDK Model Zoo engineering standards.
+
+The pipeline uses two models:
+  - Detection model: DB text detection with NV12 input.
+  - Recognition model: CTC text recognition with float32 featuremap input.
+
+Workflow:
+    1) Parse CLI arguments for model paths, data, and parameters.
+    2) Initialize PaddleOCRConfig and PaddleOCR model wrapper.
+    3) Configure runtime scheduling (BPU cores, priority).
+    4) Load image and execute full pipeline: Detection -> Crop -> Recognition.
+    5) Visualize and save the resulting image with detected boxes and text.
+"""
+
+from __future__ import annotations
+
 import argparse
-import pyclipper
-from hbm_runtime import HB_HBMRuntime
-import matplotlib.pyplot as plt
-import collections
+import logging
+import os
+import sys
 
-def bgr2nv12(image):
-    h, w = image.shape[:2]
-    yuv_i420 = cv2.cvtColor(image, cv2.COLOR_BGR2YUV_I420)
-    y = yuv_i420[:h, :]
-    u = yuv_i420[h:h+h//4, :].reshape(h//2, w//2)
-    v = yuv_i420[h+h//4:, :].reshape(h//2, w//2)
-    nv12 = np.zeros((h + h // 2, w), dtype=np.uint8)
-    nv12[:h, :] = y
-    nv12[h:, 0::2] = u
-    nv12[h:, 1::2] = v
-    return nv12
+import cv2
+import numpy as np
+
+sys.path.append(os.path.abspath("../../../../../"))
+import utils.py_utils.file_io as file_io
+import utils.py_utils.inspect as inspect
+from paddleocr import PaddleOCR, PaddleOCRConfig
 
 
-class DetectionModel:
-    def __init__(self, model_path, threshold=0.5, ratio_prime=2.7, input_size=(640, 640)):
-        """
-        Initialize the detection model.
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(name)s] [%(asctime)s].%(msecs)03d [%(levelname)s] %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger("PaddleOCR")
 
-        Args:
-            model_path: Path to the model file.
-            threshold: Threshold for binary classification.
-            ratio_prime: Ratio used for dilation of contours.
-            input_size: Desired input size for the model.
-        """
-        self.model = HB_HBMRuntime(model_path)
-        self.model_name = self.model.model_names[0]
-        self.input_name = self.model.input_names[self.model_name][0]
-        self.input_shape = self.model.input_shapes[self.model_name][self.input_name]
-        self.output_name = self.model.output_names[self.model_name][0]
-        
-        self.threshold = threshold
-        self.ratio_prime = ratio_prime
-        self.input_size = input_size
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../../../"))
+MODEL_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../model"))
+TEST_DATA_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../test_data"))
 
-    def predict(self, img, img_path, min_area=100):
-        """
-        Predict bounding boxes for the given image.
+DEFAULT_DET_MODEL_PATH = os.path.join(MODEL_DIR, "en_PP-OCRv3_det_640x640_nv12.bin")
+DEFAULT_REC_MODEL_PATH = os.path.join(MODEL_DIR, "en_PP-OCRv3_rec_48x320_rgb.bin")
+DEFAULT_TEST_IMAGE = os.path.join(TEST_DATA_DIR, "paddleocr_test.jpg")
+DEFAULT_RESULT_IMAGE = os.path.join(TEST_DATA_DIR, "result.jpg")
 
-        Args:
-            img: The input image.
-            img_path: Path to the image file.
-            min_area: Minimum area of the detected contour to be considered.
 
-        Returns:
-            dilated_polys: List of dilated polygons.
-            boxes_list: List of bounding boxes.
-        """
-        img_shape = img.shape[:2]
-        
-        resized_img = cv2.resize(img, self.input_size)
-        nv12_data = bgr2nv12(resized_img)
-        try:
-            input_tensor = nv12_data.reshape(self.input_shape)
-        except ValueError:
-            input_tensor = nv12_data
-            
-        outputs = self.model.run({self.input_name: input_tensor})
-        preds = outputs[self.model_name][self.output_name]
-        
-        # preds = self.model.get_infer_res_np_float32(0, self.input_size[0] * self.input_size[1]).reshape(1, *self.input_size)
-        preds = preds.reshape(1, *self.input_size)
-        preds = np.where(preds > self.threshold, 255, 0).astype(np.uint8).squeeze()
-        preds = cv2.resize(preds, (img_shape[1], img_shape[0]))
-
-        contours, _ = cv2.findContours(preds, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        dilated_polys = self._dilate_contours(contours)
-        boxes_list = self._get_bounding_boxes(dilated_polys, min_area)
-
-        return dilated_polys, boxes_list
-
-    def _dilate_contours(self, contours):
-        """Dilate contours using the ratio_prime."""
-        dilated_polys = []
-        for poly in contours:
-            poly = poly[:, 0, :]
-            arc_length = cv2.arcLength(poly, True)
-            if arc_length == 0:
-                continue
-            D_prime = (cv2.contourArea(poly) * self.ratio_prime / arc_length)
-
-            pco = pyclipper.PyclipperOffset()
-            pco.AddPath(poly, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
-            dilated_poly = np.array(pco.Execute(D_prime))
-
-            if dilated_poly.size == 0 or dilated_poly.dtype != np.int_ or len(dilated_poly) != 1:
-                continue
-            dilated_polys.append(dilated_poly)
-        return dilated_polys
-
-    def _get_bounding_boxes(self, dilated_polys, min_area):
-        """Get bounding boxes from dilated polygons."""
-        boxes_list = []
-        for cnt in dilated_polys:
-            if cv2.contourArea(cnt) < min_area:
-                continue
-            rect = cv2.minAreaRect(cnt)
-            box = cv2.boxPoints(rect).astype(np.int_)
-            boxes_list.append(box)
-        return boxes_list
-
-class strLabelConverter:
-    """Convert between string and label for OCR tasks.
+def draw_boxes_and_texts(
+    image: np.ndarray,
+    boxes: list,
+    texts: list,
+) -> np.ndarray:
+    """Draw detected boxes on the image and recognized texts on a white panel.
 
     Args:
-        alphabet (str): Set of possible characters.
-        ignore_case (bool, default=True): Whether to ignore case.
-    """
-
-    def __init__(self, alphabet, ignore_case=False):
-        self._ignore_case = ignore_case
-        if self._ignore_case:
-            alphabet = alphabet.lower()
-        self.alphabet = alphabet + '-'  # Add a special '-' character for padding
-
-        # Create a dictionary mapping characters to indices
-        self.dict = {}
-        for i, char in enumerate(alphabet):
-            # Note: 0 is reserved for 'blank' required by CTC loss
-            self.dict[char] = i + 1
-
-    def encode(self, text):
-        """Encode a string or a list of strings into a sequence of indices.
-
-        Args:
-            text (str or list of str): The text(s) to convert.
-
-        Returns:
-            np.array: Encoded text as an array of indices.
-            np.array: Array of lengths for each text.
-        """
-        if isinstance(text, str):
-            text = [
-                self.dict[char.lower() if self._ignore_case else char]
-                for char in text
-            ]
-            length = [len(text)]
-        elif isinstance(text, collections.Iterable):
-            length = [len(s) for s in text]
-            text = ''.join(text)
-            text, _ = self.encode(text)
-        return np.array(text, dtype=np.int32), np.array(length, dtype=np.int32)
-
-    def decode(self, t, length, raw=False):
-        """Decode a sequence of indices back into a string.
-
-        Args:
-            t (np.array): Encoded text as an array of indices.
-            length (np.array): Array of lengths for each text.
-
-        Raises:
-            AssertionError: If the length of the text and the provided length do not match.
-
-        Returns:
-            str or list of str: Decoded text.
-        """
-        if len(length) == 1:
-            length = length[0]
-            assert len(t) == length, f"text with length: {len(t)} does not match declared length: {length}"
-            if raw:
-                return ''.join([self.alphabet[i - 1] for i in t])
-            else:
-                char_list = []
-                for i in range(length):
-                    if t[i] != 0 and (not (i > 0 and t[i - 1] == t[i])):
-                        char_list.append(self.alphabet[t[i] - 1])
-                return ''.join(char_list)
-        else:
-            # Batch decoding mode
-            assert len(t) == length.sum(), f"texts with length: {len(t)} do not match declared length: {length.sum()}"
-            texts = []
-            index = 0
-            for i in range(length.size):
-                l = length[i]
-                texts.append(
-                    self.decode(
-                        t[index:index + l], np.array([l]), raw=raw))
-                index += l
-            return texts
-
-class rec_model:
-    def __init__(self, model_path, converter, input_size=(48, 320), output_size=(40, 97)):
-        """
-        Initialize the recognition model.
-
-        Args:
-            model_path (str): Path to the model file.
-            converter (strLabelConverter): Object to handle string and label conversion.
-            output_size (tuple): Output size of the model.
-        """
-        self.model = HB_HBMRuntime(model_path)
-        self.model_name = self.model.model_names[0]
-        self.input_name = self.model.input_names[self.model_name][0]
-        self.output_name = self.model.output_names[self.model_name][0]
-
-        self.converter = converter
-        self.output_size = output_size
-        self.input_size = input_size
-
-    def predict(self, img_path):
-        """
-        Perform prediction on an image.
-
-        Args:
-            img (np.array): Input image.
-            img_path (str): Path to the image file.
-
-        Returns:
-            str: Raw prediction result.
-            str: Simplified prediction result.
-        """
-        # Read the image and convert to NV12 format for inference
-        img = cv2.imread(img_path)
-        resized_img = cv2.resize(img, (self.input_size[1], self.input_size[0]))
-        nv12_data = bgr2nv12(resized_img)
-        try:
-            input_tensor = nv12_data.reshape(self.model.input_shapes[self.model_name][self.input_name])
-        except ValueError:
-            input_tensor = nv12_data
-            
-        outputs = self.model.run({self.input_name: input_tensor})
-        preds = outputs[self.model_name][self.output_name]
-        
-        # Get the model inference result and reshape it
-        # preds = self.model.get_infer_res_np_float32(0, self.output_size[0] * self.output_size[1]).reshape(1, *self.output_size)
-        preds = preds.reshape(1, *self.output_size)
-        print(preds.shape)
-        
-        # Transpose and get the argmax to obtain final prediction
-        preds = np.transpose(preds, (1, 0, 2))
-        preds = np.argmax(preds, axis=2)
-        preds = preds.transpose(1, 0).reshape(-1)
-        preds_size = np.array([preds.size], dtype=np.int32)
-        raw_pred = self.converter.decode(np.array(preds), np.array(preds_size), raw=True)
-        sim_pred = self.converter.decode(np.array(preds), np.array(preds_size), raw=False)
-        return raw_pred,sim_pred
-    
-    def predict_float(self, img):
-        """
-        Perform prediction on an image.
-
-        Args:
-            img (np.array): Input image.
-            img_path (str): Path to the image file.
-
-        Returns:
-            str: Raw prediction result.
-            str: Simplified prediction result.
-        """
-        # Read the image and convert to float3212 format for inference
-        image_resized = cv2.resize(img, dsize=(self.input_size[1], self.input_size[0]))
-        image_resized = (image_resized / 255.0).astype(np.float32)
-        input_image = np.zeros((image_resized.shape[0], image_resized.shape[1], 3), dtype=np.float32)
-        input_image[:image_resized.shape[0], :image_resized.shape[1], :] = image_resized
-        input_image = image_resized[:, :, [2, 1, 0]]  # bgr->rgb
-        input_image = input_image[None].transpose(0, 3, 1, 2) # NHWC -> HCHW
-        
-        
-        outputs = self.model.run({self.input_name: input_image})
-        preds = outputs[self.model_name][self.output_name]
-        
-        # Get the model inference result and reshape it
-        # preds = self.model.get_infer_res_np_float32(0, self.output_size[0] * self.output_size[1]).reshape(1, *self.output_size)
-        preds = preds.reshape(1, *self.output_size)
-        print("shape:", preds.shape)
-        
-        # Transpose and get the argmax to obtain final prediction
-        preds = np.transpose(preds, (1, 0, 2))
-        preds = np.argmax(preds, axis=2)
-        preds = preds.transpose(1, 0).reshape(-1)
-        preds_size = np.array([preds.size], dtype=np.int32)
-        raw_pred = self.converter.decode(np.array(preds), np.array(preds_size), raw=True)
-        sim_pred = self.converter.decode(np.array(preds), np.array(preds_size), raw=False)
-        return raw_pred,sim_pred
-
-def load_image(img_path):
-    """Load an image from a file path."""
-    img = cv2.imread(img_path)
-    if img is None:
-        raise FileNotFoundError(f"Image file '{img_path}' not found.")
-    return img
-
-def draw_bbox(img, bboxes, color=(128, 240, 128), thickness=3):
-    """
-    Draw bounding boxes on an image.
-
-    Args:
-        img: The input image.
-        bboxes: A list of bounding boxes to draw.
-        color: The color of the bounding boxes.
-        thickness: The thickness of the bounding box lines.
+        image (np.ndarray): Original image.
+        boxes (list): List of 4-point bounding boxes.
+        texts (list): List of recognized text strings.
 
     Returns:
-        The image with bounding boxes drawn on it.
+        np.ndarray: Combined image with boxes and text panel.
     """
-    img_copy = img.copy()
-    for bbox in bboxes:
-        bbox = bbox.astype(int)
-        cv2.polylines(img_copy, [bbox], isClosed=True, color=color, thickness=thickness)
-    return img_copy
+    img_boxes = image.copy()
+    for box in boxes:
+        box_int = box.astype(int)
+        cv2.polylines(img_boxes, [box_int], isClosed=True, color=(128, 240, 128), thickness=3)
 
-def crop_and_rotate_image(img, box):
-    """Crop the image using the bounding box coordinates."""
-    rect = cv2.minAreaRect(box) 
-    box = cv2.boxPoints(rect).astype(np.intp)
-    width = int(rect[1][0])
-    height = int(rect[1][1])
-    angle = rect[2]
+    white_panel = np.ones(image.shape, dtype=np.uint8) * 255
+    y_offset = 60
+    for i, text in enumerate(texts):
+        cv2.putText(
+            white_panel,
+            text,
+            (10, y_offset + i * 60),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.5,
+            (0, 0, 255),
+            3,
+        )
 
-    src_pts = box.astype("float32")
-    dst_pts = np.array([[0, height-1],
-                        [0, 0],
-                        [width-1, 0],
-                        [width-1, height-1]],
-                        dtype="float32")
+    return np.hstack((img_boxes, white_panel))
 
-    M = cv2.getPerspectiveTransform(src_pts, dst_pts)
-    warped = cv2.warpPerspective(img, M, (width, height))
-    
-    if angle >= 45:
-        rotated = cv2.rotate(warped, cv2.ROTATE_90_CLOCKWISE)
-    else: 
-        rotated = warped
-    
-    print("width:", rotated.shape[1], "height:", rotated.shape[0])
-    
-    return rotated
 
-def display_image(img, title="Image", output_path='output/predict.jpg'):
-    """Display an image using Matplotlib and save it to a file.
+def save_image(path: str, image) -> None:
+    """Save the result image to disk."""
+    save_dir = os.path.dirname(path)
+    if save_dir:
+        os.makedirs(save_dir, exist_ok=True)
+    if not cv2.imwrite(path, image):
+        raise RuntimeError(f"Failed to save image to {path}")
 
-    Args:
-        img: The image to display.
-        title: The title for the displayed image.
-        output_path: The path where the image will be saved.
+
+def main() -> None:
+    """Run the complete PaddleOCR pipeline on a single image.
+
+    The entry follows the standardized sample pattern used in this repository:
+    1. Parse default-usable command-line arguments.
+    2. Build the PaddleOCR runtime configuration.
+    3. Load the test image.
+    4. Execute `predict()` on the runtime wrapper.
+    5. Print recognized texts and save the visualization image.
     """
-    # Ensure the output directory exists
-    output_dir = os.path.dirname(output_path)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    # Save the image to a file
-    cv2.imwrite(output_path, img)
-    
-    # Display the image using Matplotlib
-    plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))  # Convert BGR to RGB for displaying
-    plt.title(title)
-    plt.axis('off')
-    plt.show()
-
-def draw_text_on_image(img, texts, boxes, font_scale=0.7, color=(0, 0, 0), font_thickness=3):
-    """Draw recognized texts on a white image based on bounding boxes."""
-    for text, box in zip(texts, boxes):
-        # Get the center of the bounding box
-        center_x = int((box[0][0] + box[2][0]) / 2)
-        center_y = int((box[0][1] + box[2][1]) / 2)
-        
-        # Calculate the size of the text
-        (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
-        
-        # Calculate the position for the text to center it in the bounding box
-        text_x = 0
-        text_y = center_y + text_height // 2  # Use bottom of text
-
-        # Draw the text on the image
-        cv2.putText(img, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, font_thickness)
-
-def init_args():
-    parser = argparse.ArgumentParser(description='paddleocr')
-    parser.add_argument('--det_model_path', default='../../model/en_PP-OCRv3_det_640x640_nv12.bin', type=str)
-    parser.add_argument('--rec_model_path', default='../../model/en_PP-OCRv3_rec_48x320_rgb.bin', type=str)
-    parser.add_argument('--image_path', default='../../test_data/paddleocr_test.jpg', type=str, help='img path for predict')
-    parser.add_argument('--output_folder', default='../../test_data/output/predict.jpg', type=str, help='img path for output')
+    parser = argparse.ArgumentParser(description="PaddleOCR Inference")
+    parser.add_argument("--det-model-path", type=str, default=DEFAULT_DET_MODEL_PATH,
+                        help="Path to the detection model (.bin).")
+    parser.add_argument("--rec-model-path", type=str, default=DEFAULT_REC_MODEL_PATH,
+                        help="Path to the recognition model (.bin).")
+    parser.add_argument("--test-img", type=str, default=DEFAULT_TEST_IMAGE,
+                        help="Path to the test input image.")
+    parser.add_argument("--det-threshold", type=float, default=0.5,
+                        help="Binarization threshold for detection output.")
+    parser.add_argument("--img-save-path", type=str, default=DEFAULT_RESULT_IMAGE,
+                        help="Path to save output result image.")
+    parser.add_argument("--priority", type=int, default=0,
+                        help="Model priority (0~255).")
+    parser.add_argument("--bpu-cores", nargs="+", type=int, default=[0],
+                        help="BPU core indexes to run inference.")
     args = parser.parse_args()
-    return args
 
-def main():
-    # Alphabet for OCR
-    alphabet = """0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!"#$%&'()*+,-./  """
-    converter = strLabelConverter(alphabet)
+    config = PaddleOCRConfig(
+        det_model_path=args.det_model_path,
+        rec_model_path=args.rec_model_path,
+        det_threshold=args.det_threshold,
+    )
+    model = PaddleOCR(config)
+    model.set_scheduling_params(priority=args.priority, bpu_cores=args.bpu_cores)
 
-    # Load image
-    img = load_image(args.image_path)
+    inspect.print_model_info(model.det_model)
+    inspect.print_model_info(model.rec_model)
 
-    # Initialize detection and recognition models
-    detection_model = DetectionModel(args.det_model_path)
-    recognition_model = rec_model(args.rec_model_path, converter)
+    image = file_io.load_image(args.test_img)
+    boxes, texts = model.predict(image)
 
-    # Detect bounding boxes
-    _, boxes_list = detection_model.predict(img, args.image_path)
+    logger.info(f"Detected {len(boxes)} text regions:")
+    for i, (box, text) in enumerate(zip(boxes, texts), start=1):
+        logger.info(f"  [{i}] {text}")
 
-    # Draw bounding boxes on the original image
-    img_boxes = draw_bbox(img, boxes_list)
-    display_image(img_boxes, title="Bounding Boxes", output_path=args.output_folder)
+    vis_image = draw_boxes_and_texts(image, boxes, texts)
+    save_image(args.img_save_path, vis_image)
+    logger.info(f'Saving results to "{args.img_save_path}"')
 
-    # Recognize text in each detected box
-    recognized_texts = []
-    
-    for i, box in enumerate(boxes_list):
-        print(f"Box {i + 1}:")
-        cropped_img = crop_and_rotate_image(img, box)  # Crop the image using the bounding box
-        raw_pred, sim_pred = recognition_model.predict_float(cropped_img)
-        recognized_texts.append(sim_pred)
-        print(f"Raw Prediction: {raw_pred}")
-        print(f"Simplified Prediction: {sim_pred} \n")
-    
-    # Create a white image of the same size as the original
-    white_image = np.ones(img.shape, dtype=np.uint8) * 255
 
-    # Draw recognized texts on the white image
-    draw_text_on_image(white_image, recognized_texts, boxes_list, font_scale=5, color=(0, 0, 255), font_thickness=5)  # Red text
-
-    # Combine original and white images for display
-    combined_image = np.hstack((img_boxes, white_image))
-
-    # Display the combined image
-    display_image(combined_image, title="Original and Recognized Texts", output_path=args.output_folder)
-
-if __name__ == '__main__':
-    args = init_args()
+if __name__ == "__main__":
     main()

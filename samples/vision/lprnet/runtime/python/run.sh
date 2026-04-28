@@ -2,12 +2,12 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MODEL_PATH="${SCRIPT_DIR}/../../model/lpr.bin"
+MODEL_DIR="${SCRIPT_DIR}/../../model"
 
-if [ ! -f "${MODEL_PATH}" ]; then
-  echo "[Error] Missing model file: ${MODEL_PATH}" >&2
-  exit 1
+# Download model if missing
+if [ ! -f "${MODEL_DIR}/lpr.bin" ]; then
+    bash "${MODEL_DIR}/download_model.sh"
 fi
 
 cd "${SCRIPT_DIR}"
-python3 main.py --model-path "${MODEL_PATH}" "$@"
+python3 main.py "$@"

@@ -40,7 +40,7 @@ python3 main.py -h
 | `--label-file` | 可视化使用的类别名称文件路径。 | `../../../../../datasets/coco/coco_classes.names` |
 | `--priority` | 运行时调度优先级。 | `0` |
 | `--bpu-cores` | 推理使用的 BPU Core 编号。 | `0` |
-| `--test-img` | 测试输入图片路径。 | `../../test_data/bus.jpg` |
+| `--test-img` | 测试输入图片路径。 | `../../../../../datasets/coco/assets/bus.jpg` |
 | `--img-save-path` | 结果图保存路径。 | `../../test_data/result.jpg` |
 | `--resize-type` | Resize 策略（`0`：直接缩放，`1`：letterbox）。 | `0` |
 | `--classes-num` | 检测类别数量。 | `80` |

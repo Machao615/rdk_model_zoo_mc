@@ -1,8 +1,4 @@
 <div align="center">
-  <p><b>⚠️ 注意：本仓库目前正处于迁移重构中，部分功能和文档暂未完全开发完成，敬请谅解。</b></p>
-</div>
-
-<div align="center">
   <img src="resource/imgs/model_zoo_logo.jpg" width="60%" alt="RDK Model Zoo Logo"/>
 </div>
 
@@ -36,20 +32,20 @@
 仓库中收录了覆盖多个 AI 领域的 BPU 可运行模型，并提供从 **原始模型 (PyTorch/ONNX) -> 定点量化转换 -> 推理运行 -> 结果解析 -> 示例验证** 的完整参考实现，帮助用户以最小成本理解并使用 BPU 能力。
 
 ### 仓库核心价值
+
 - 🚀 **快速把 BPU 用起来**：提供开箱即用的推理 Pipeline，帮助用户在最短时间内完成 BPU 推理验证及性能评估。
 - 🧩 **完整端到端示例**：覆盖从算法导出、定点量化转换到板端高效运行（`.bin` / `.hbm`）的全过程。包含模型加载、前处理、BPU 推理执行、后处理与结果可视化。
 - 📐 **规范化设计与接口文档**：提供统一的目录结构与示例代码规范，支持 Python（`hbm_runtime`）与 C/C++ 接口，便于快速理解和二次开发，降低集成与维护成本。
-- 🌐 **全场景覆盖**：涵盖分类、检测、分割、姿态估计、OCR 以及 LLM 等前沿多模态模型。
+- 🌐 **全场景覆盖**：涵盖分类、检测、分割、姿态估计、OCR、多模态模型以及端到端解决方案。
 
 ### 硬件与系统支持
-- **RDK X5 (Bayse-e)**：推荐使用 RDK OS >= 3.5.0（基于 Ubuntu 22.04 aarch64, TROS-Humble）。
+
+- **RDK X5 (Bayes-e)**：推荐使用 RDK OS >= 3.5.0（基于 Ubuntu 22.04 aarch64, TROS-Humble）。
 - **RDK S100/S600**：请参考专用仓库 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s)。
 
 ---
 
 ## 仓库目录结构
-
-本仓库将**已完成标准化重构的交付内容**统一放在 `samples/`，将**仍处于旧结构或尚未完成标准化重构的内容**保留在 `demos/`。
 
 <details>
 <summary><b>点击展开项目目录结构</b></summary>
@@ -58,40 +54,45 @@
 
 ```bash
 rdk_model_zoo/
-├── samples/               # 已完成标准化重构的交付样例
-│   └── vision/
-│       ├── convnext/
-│       ├── fcos/
-│       ├── lprnet/
-│       ├── mobilenetv1/
-│       ├── mobilenetv2/
-│       ├── mobilenetv3/
-│       ├── mobilenetv4/
-│       ├── googlenet/
-│       ├── edgenext/
-│       ├── efficientformer/
-│       ├── efficientformerv2/
-│       ├── efficientnet/
-│       ├── fasternet/
-│       ├── fastvit/
-│       ├── paddleocr/
-│       ├── repvit/
-│       ├── resnet/
-│       ├── resnext/
-│       ├── ultralytics_yolo/
-│       ├── ultralytics_yolo26/
-│       └── yolov5/
-├── demos/                 # 尚未完成标准化重构的旧版或过渡内容
-│   ├── classification/    # 分类模型集合（20+ 模型）
-│   ├── detect/            # LPRNet 等检测类 demo
-│   ├── Seg/               # 分割类旧版 demo
-│   ├── Vision/            # MODNet 等视觉类 demo
-│   ├── llm/               # LLM / 多模态 demo
-│   └── solutions/         # 端到端解决方案 demo
-├── docs/                  # 项目规范与参考文档
-├── datasets/              # 数据集与下载脚本
-├── utils/                 # 公共 C++ / Python 工具
-└── resource/              # 静态资源（图片、Logo 等）
+|-- samples/
+|   |-- vision/
+|   |   |-- clip/
+|   |   |-- convnext/
+|   |   |-- edgenext/
+|   |   |-- efficientformer/
+|   |   |-- efficientformerv2/
+|   |   |-- efficientnet/
+|   |   |-- efficientvit/
+|   |   |-- fasternet/
+|   |   |-- fastvit/
+|   |   |-- fcos/
+|   |   |-- googlenet/
+|   |   |-- lprnet/
+|   |   |-- mobilenetv1/
+|   |   |-- mobilenetv2/
+|   |   |-- mobilenetv3/
+|   |   |-- mobilenetv4/
+|   |   |-- mobileone/
+|   |   |-- modnet/
+|   |   |-- paddleocr/
+|   |   |-- repghost/
+|   |   |-- repvgg/
+|   |   |-- repvit/
+|   |   |-- resnet/
+|   |   |-- resnext/
+|   |   |-- ultralytics_yolo/
+|   |   |-- ultralytics_yolo26/
+|   |   |-- vargconvnet/
+|   |   |-- yoloe/
+|   |   |-- yolov5/
+|   |   `-- yoloworld/
+|   `-- solutions/
+|       |-- llm/
+|       `-- video/
+|-- docs/                  # 项目规范与参考文档
+|-- datasets/              # 数据集与下载脚本
+|-- utils/                 # 公共 C++ / Python 工具
+`-- resource/              # 静态资源（图片、Logo 等）
 ```
 </details>
 
@@ -99,34 +100,18 @@ rdk_model_zoo/
 
 ## 快速开始 (Quick Start)
 
-优先使用 `samples/` 中的标准化样例。只有在目标模型还未完成标准化重构时，才进入 `demos/`。
-
-1. **选择正确目录**
-   - 标准化样例：`samples/vision/...`
-   - 旧版 / 待重构内容：`demos/...`
-2. **检查系统版本**
+1. **检查系统版本**
    - 确保目标板卡系统版本满足 `RDK OS >= 3.5.0`。
-3. **连接硬件**
+2. **连接硬件**
    - 确保 RDK 板卡上电并可通过 SSH 或 VSCode Remote SSH 访问。
-4. **先阅读对应 README**
+3. **先阅读对应 README**
    - 进入目标目录后先阅读 `README.md` / `README_cn.md`，再执行命令。
+4. **运行 sample**
 
-> **示例 A：运行标准化 Sample（`samples/`）**
-> ```bash
-> # 进入标准化 Sample 目录
-> cd samples/vision/yolov5/runtime/python
->
-> # 运行推理（脚本会自动下载默认模型）
-> bash run.sh
-> ```
-
-> **示例 B：查看旧版 / 待重构 Demo（`demos/`）**
-> ```bash
-> # 进入旧版 demo 目录
-> cd demos/detect
->
-> # 阅读该 demo 的 README 并按说明运行
-> ```
+```bash
+cd samples/vision/yolov5/runtime/python
+bash run.sh
+```
 
 **推理结果示例：**
 <div align="center">
@@ -137,45 +122,46 @@ rdk_model_zoo/
 
 ## 模型支持矩阵 (Model Zoo Matrix)
 
-### 标准化 Samples
-
-以下目录已经完成标准化重构，是当前推荐的使用入口。
+### 视觉 Samples
 
 | 类别 | 模型 | 路径 |
 | :--- | :--- | :---: |
 | **分类** | ConvNeXt | [Code](./samples/vision/convnext) |
-| **分类** | MobileNetV1 | [Code](./samples/vision/mobilenetv1) |
-| **分类** | MobileNetV2 | [Code](./samples/vision/mobilenetv2) |
-| **分类** | MobileNetV3 | [Code](./samples/vision/mobilenetv3) |
-| **分类** | MobileNetV4 | [Code](./samples/vision/mobilenetv4) |
-| **分类** | GoogLeNet | [Code](./samples/vision/googlenet) |
 | **分类** | EdgeNeXt | [Code](./samples/vision/edgenext) |
 | **分类** | EfficientFormer | [Code](./samples/vision/efficientformer) |
 | **分类** | EfficientFormerV2 | [Code](./samples/vision/efficientformerv2) |
 | **分类** | EfficientNet | [Code](./samples/vision/efficientnet) |
+| **分类** | EfficientViT | [Code](./samples/vision/efficientvit) |
 | **分类** | FasterNet | [Code](./samples/vision/fasternet) |
 | **分类** | FastViT | [Code](./samples/vision/fastvit) |
+| **分类** | GoogLeNet | [Code](./samples/vision/googlenet) |
+| **分类** | MobileNetV1 | [Code](./samples/vision/mobilenetv1) |
+| **分类** | MobileNetV2 | [Code](./samples/vision/mobilenetv2) |
+| **分类** | MobileNetV3 | [Code](./samples/vision/mobilenetv3) |
+| **分类** | MobileNetV4 | [Code](./samples/vision/mobilenetv4) |
+| **分类** | MobileOne | [Code](./samples/vision/mobileone) |
+| **分类** | RepGhost | [Code](./samples/vision/repghost) |
+| **分类** | RepVGG | [Code](./samples/vision/repvgg) |
 | **分类** | RepViT | [Code](./samples/vision/repvit) |
 | **分类** | ResNet | [Code](./samples/vision/resnet) |
 | **分类** | ResNeXt | [Code](./samples/vision/resnext) |
+| **分类** | VargConvNet | [Code](./samples/vision/vargconvnet) |
 | **检测** | FCOS | [Code](./samples/vision/fcos) |
-| **识别** | LPRNet | [Code](./samples/vision/lprnet) |
 | **检测** | YOLOv5 | [Code](./samples/vision/yolov5) |
 | **Ultralytics YOLO** | YOLOv5u、YOLOv8、YOLOv9、YOLOv10、YOLO11、YOLO12、YOLO13、YOLO26 | [Code](./samples/vision/ultralytics_yolo)、[YOLO26](./samples/vision/ultralytics_yolo26) |
+| **实例分割** | YOLOE | [Code](./samples/vision/yoloe) |
+| **抠图** | MODNet | [Code](./samples/vision/modnet) |
 | **OCR** | PaddleOCR | [Code](./samples/vision/paddleocr) |
+| **识别** | LPRNet | [Code](./samples/vision/lprnet) |
+| **多模态** | CLIP | [Code](./samples/vision/clip) |
+| **多模态** | YOLOWorld | [Code](./samples/vision/yoloworld) |
 
-### Legacy / 待重构 Demos
+### 解决方案 Samples
 
-以下目录已回迁到 `demos/`，作为旧版内容或待后续标准化重构的内容保留。
-
-| 类别 | 代表模型 | 路径 |
+| 类别 | Sample | 路径 |
 | :--- | :--- | :---: |
-| **分类** | 其他旧版分类模型 | [Code](./demos/classification) |
-| **检测** | 其他旧版检测 demo | [Code](./demos/detect) |
-| **分割** | YOLOE-11-Seg-Prompt-Free | [Code](./demos/Seg) |
-| **视觉特化** | MODNet | [Code](./demos/Vision) |
-| **大模型 / 多模态** | CLIP、YOLO-World | [Code](./demos/llm) |
-| **解决方案** | RDK LLM Solutions、RDK Video Solutions | [Code](./demos/solutions) |
+| **LLM 解决方案** | RDK LLM Solution | [Code](./samples/solutions/llm) |
+| **视频解决方案** | RDK Video Solution | [Code](./samples/solutions/video) |
 
 ---
 
@@ -257,6 +243,7 @@ rdk_model_zoo/
 ## 社区与贡献 (Community & Contribution)
 
 ### Star 增长趋势
+
 [![Star History Chart](https://api.star-history.com/svg?repos=D-Robotics/rdk_model_zoo&type=Date)](https://star-history.com/#D-Robotics/rdk_model_zoo&Date)
 
 欢迎参与共建 RDK Model Zoo。如有问题或建议，请通过 [GitHub Issues](https://github.com/D-Robotics/rdk_model_zoo/issues) 提出，或在 [D-Robotics 开发者社区](https://developer.d-robotics.cc/) 交流。

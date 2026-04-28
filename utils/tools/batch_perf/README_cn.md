@@ -1,12 +1,22 @@
-# BATCH PERF
+# Batch Perf
 
-使用Python脚本, 对某一个特定文件夹内的所有*bin结尾的模型文件进行perf.
+本工具用于对指定目录下所有以 `.bin` 结尾的模型文件批量执行 `perf` 测试。
 
-顺序: perf的顺序按照模型文件的大小，从小到大.
+## 使用方式
 
-线程数量: 从1到MAX_NUM, 其中MAX_NUM一般设置到2. 
+可以将脚本配置为 alias，便于在任意模型目录中调用：
 
-映射
 ```bash
-alias perf='python3 <path to your rdk_model_zoo>/demos/basic/batch_perf/batch_perf.py'
+alias perf='python3 <path to your rdk_model_zoo>/utils/tools/batch_perf/batch_perf.py'
 ```
+
+然后在模型目录中执行：
+
+```bash
+perf .
+```
+
+## 说明
+
+- 测试顺序按模型文件大小从小到大排序。
+- 线程数量通常从 `1` 到 `MAX_NUM`，`MAX_NUM` 一般设置为 `2`。

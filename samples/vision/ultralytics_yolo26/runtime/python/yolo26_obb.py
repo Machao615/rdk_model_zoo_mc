@@ -112,6 +112,34 @@ class YOLO26OBB:
             self.input_h = input_shape[1]
             self.input_w = input_shape[2]
 
+        # Reorder output_names into (cls, box, angle) × 3 layout.
+        output_shapes = self.model.output_shapes[self.model_name]
+        groups = {}
+        for name in self.output_names:
+            shape = output_shapes[name]
+            h, w, last = shape[1], shape[2], shape[3]
+            groups.setdefault((h, w), []).append((name, last))
+
+        sorted_hw = sorted(groups.keys(), key=lambda x: x[0])
+
+        reordered = []
+        for hw in sorted_hw:
+            members = groups[hw]
+            # Sort into (cls, box, angle): cls=classes_num(15), box=4, angle=1
+            def _obb_sort_key(item):
+                last = item[1]
+                if last == self.cfg.classes_num:
+                    return 0  # cls
+                elif last == 4:
+                    return 1  # box
+                else:
+                    return 2  # angle
+            members.sort(key=_obb_sort_key)
+            for name, _ in members:
+                reordered.append(name)
+
+        self.output_names = reordered
+
         self.grids = {}
         for stride in self.cfg.strides:
             grid_h, grid_w = self.input_h // stride, self.input_w // stride

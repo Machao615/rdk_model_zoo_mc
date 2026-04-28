@@ -2,14 +2,6 @@
 
 This sample demonstrates how to use the quantized ConvNeXt model on BPU for image classification tasks.
 
-## Environment Dependencies
-
-This sample has no special environment dependencies, ensure that the environment dependencies in pydev are installed.
-
-```bash
-pip install numpy opencv-python hbm-runtime scipy
-```
-
 ## Directory Structure
 
 ```text
@@ -26,7 +18,7 @@ pip install numpy opencv-python hbm-runtime scipy
 |----------------|----------------------------------------------------------|---------------------------------------------|
 | `--model-path` | Path to the model file (.bin format)                     | `../../model/ConvNeXt_atto_224x224_nv12.bin` |
 | `--test-img`   | Path to the test input image                             | `../../test_data/cheetah.JPEG`              |
-| `--label-file` | Path to the ImageNet label file                          | `../../../../datasets/imagenet/imagenet_classes.names` |
+| `--label-file` | Path to the ImageNet label file                          | `../../../../../datasets/imagenet/imagenet_classes.names` |
 | `--topk`       | Display Top-K results                                    | `5`                                         |
 | `--resize-type`| Scaling strategy: 0 for direct resize, 1 for padding     | `1`                                         |
 

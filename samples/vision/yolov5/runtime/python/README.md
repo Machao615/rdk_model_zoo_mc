@@ -40,7 +40,7 @@ python3 main.py -h
 | `--label-file` | Path to the class names file used by visualization. | `../../../../../datasets/coco/coco_classes.names` |
 | `--priority` | Model priority for runtime scheduling. | `0` |
 | `--bpu-cores` | BPU core indexes used for inference. | `0` |
-| `--test-img` | Path to the test input image. | `../../test_data/bus.jpg` |
+| `--test-img` | Path to the test input image. | `../../../../../datasets/coco/assets/bus.jpg` |
 | `--img-save-path` | Path to save the output image. | `../../test_data/result.jpg` |
 | `--resize-type` | Resize strategy (`0`: direct resize, `1`: letterbox). | `0` |
 | `--classes-num` | Number of detection classes. | `80` |

@@ -32,7 +32,7 @@ pip install numpy opencv-python hbm-runtime scipy
 |---|---|---|
 | `--task` | 任务类型：`detect`、`seg`、`pose`、`cls` | `detect` |
 | `--model-path` | RDK X5 `.bin` 模型路径 | `../../model/yolo11n_detect_bayese_640x640_nv12.bin` |
-| `--test-img` | 测试图片路径 | `../../test_data/bus.jpg` |
+| `--test-img` | 测试图片路径 | `../../../../../datasets/coco/assets/bus.jpg` |
 | `--label-file` | 标签文件路径，留空时使用任务默认值 | `""` |
 | `--img-save-path` | `detect`、`seg`、`pose` 结果图保存路径 | `../../test_data/result_detect.jpg` |
 | `--priority` | 模型优先级 | `0` |
@@ -66,7 +66,7 @@ pip install numpy opencv-python hbm-runtime scipy
     python3 main.py \
         --task detect \
         --model-path ../../model/yolo11n_detect_bayese_640x640_nv12.bin \
-        --test-img ../../test_data/bus.jpg \
+        --test-img ../../../../../datasets/coco/assets/bus.jpg \
         --img-save-path ../../test_data/result_detect.jpg
     ```
 
@@ -78,7 +78,7 @@ pip install numpy opencv-python hbm-runtime scipy
 python3 main.py \
     --task seg \
     --model-path ../../model/yolo11n_seg_bayese_640x640_nv12.bin \
-    --test-img ../../test_data/bus.jpg \
+    --test-img ../../../../../datasets/coco/assets/bus.jpg \
     --img-save-path ../../test_data/result_seg.jpg
 ```
 
@@ -88,7 +88,7 @@ python3 main.py \
 python3 main.py \
     --task pose \
     --model-path ../../model/yolo11n_pose_bayese_640x640_nv12.bin \
-    --test-img ../../test_data/bus.jpg \
+    --test-img ../../../../../datasets/coco/assets/bus.jpg \
     --img-save-path ../../test_data/result_pose.jpg
 ```
 

@@ -102,6 +102,34 @@ class YOLO26Pose:
             self.input_h = input_shape[1]
             self.input_w = input_shape[2]
 
+        # Reorder output_names into (cls, box, kpt) × 3 layout.
+        output_shapes = self.model.output_shapes[self.model_name]
+        groups = {}
+        for name in self.output_names:
+            shape = output_shapes[name]
+            h, w, last = shape[1], shape[2], shape[3]
+            groups.setdefault((h, w), []).append((name, last))
+
+        sorted_hw = sorted(groups.keys(), key=lambda x: x[0])
+
+        reordered = []
+        for hw in sorted_hw:
+            members = groups[hw]
+            # Sort into (cls, box, kpt): cls=1, box=4, kpt=51
+            def _pose_sort_key(item):
+                last = item[1]
+                if last == 1:
+                    return 0  # cls
+                elif last == 4:
+                    return 1  # box
+                else:
+                    return 2  # kpt
+            members.sort(key=_pose_sort_key)
+            for name, _ in members:
+                reordered.append(name)
+
+        self.output_names = reordered
+
         self.grids = {}
         for stride in self.cfg.strides:
             grid_h, grid_w = self.input_h // stride, self.input_w // stride
