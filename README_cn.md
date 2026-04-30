@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="resource/imgs/model_zoo_logo.jpg" width="60%" alt="RDK Model Zoo Logo"/>
+  <img src="docs/assets/model_zoo_logo.jpg" width="60%" alt="RDK Model Zoo Logo"/>
 </div>
 
 <div align="center">
@@ -97,8 +97,8 @@ rdk_model_zoo/
 |       `-- video/
 |-- docs/                  # 项目规范与参考文档
 |-- datasets/              # 数据集与下载脚本
+|-- tros/                  # TROS 集成指南与示例
 |-- utils/                 # 公共 C++ / Python 工具
-`-- resource/              # 静态资源（图片、Logo 等）
 ```
 </details>
 
@@ -121,7 +121,7 @@ bash run.sh
 
 **推理结果示例：**
 <div align="center">
-  <img src="resource/imgs/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
+  <img src="docs/assets/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
 </div>
 
 ---

@@ -18,8 +18,8 @@ This directory contains evaluation scripts and benchmark reference data for Ultr
 
 The evaluator scripts use the following datasets by default:
 
-- **Detection / Segmentation / Pose**: [COCO2017 val](../../../../resource/datasets/COCO2017/README.md)
-- **Classification**: [ImageNet val](../../../../resource/datasets/ImageNet/README.md)
+- **Detection / Segmentation / Pose**: [COCO val](../../../../datasets/coco/README.md)
+- **Classification**: [ImageNet val](../../../../datasets/imagenet/README.md)
 
 Make sure the datasets are prepared in the expected directories before running the evaluation scripts.
 
@@ -32,7 +32,7 @@ Run `eval_Ultralytics_YOLO_Detect_YUV420SP.py` to dump COCO-style detection resu
 ```bash
 python3 eval_Ultralytics_YOLO_Detect_YUV420SP.py \
   --model-path source/reference_bin_models/det/yolo12n_detect_bayes-e_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/COCO2017/val2017 \
+  --image-path ../../../../datasets/coco/val2017 \
   --json-path yolo12n_detect_bayes-e_640x640_nv12_py_coco2017_val_pridect.json
 ```
 
@@ -43,7 +43,7 @@ Run `eval_Ultralytics_YOLO_Seg_YUV420SP.py` to dump COCO-style detection and seg
 ```bash
 python3 eval_Ultralytics_YOLO_Seg_YUV420SP.py \
   --model-path source/reference_bin_models/seg/yolo11n-seg_detect_bayes-e_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/COCO2017/val2017 \
+  --image-path ../../../../datasets/coco/val2017 \
   --json-path yolo11n_seg2_bayese_640x640_nv12_coco2017_val_pridect_0_5.json
 ```
 
@@ -54,7 +54,7 @@ Run `eval_Ultralytics_YOLO_Pose_YUV420SP.py` to dump COCO-style keypoint results
 ```bash
 python3 eval_Ultralytics_YOLO_Pose_YUV420SP.py \
   --model-path source/reference_bin_models/pose/yolov8n-pose_detect_bayes-e_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/COCO2017/val2017 \
+  --image-path ../../../../datasets/coco/val2017 \
   --json-path yolov8n-pose_detect_bayes-e_640x640_nv12_py_coco2017_val_pridect.json
 ```
 
@@ -65,7 +65,7 @@ Run `eval_Ultralytics_YOLO_Classify_YUV420SP.py` to evaluate Top-1 and Top-5 acc
 ```bash
 python3 eval_Ultralytics_YOLO_Classify_YUV420SP.py \
   --model-path source/reference_bin_models/cls/yolo11n_cls_detect_bayese_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/ImageNet/val_images \
+  --image-path ../../../../datasets/imagenet/val_images \
   --json-path yolo11n_cls_detect_bayese_640x640_nv12_py_coco2017_val_pridect.json
 ```
 
@@ -316,7 +316,7 @@ python3 eval_batch.py \
 3. Example performance test commands:
    ```bash
    hrt_model_exec perf --thread_num 2 --model_file yolov8n_detect_bayese_640x640_nv12_modified.bin
-   python3 ../../../resource/tools/batch_perf/batch_perf.py --max 3 --file source/reference_hbm_models/
+   python3 ../../../../utils/tools/batch_perf/batch_perf.py --max 3 --file source/reference_hbm_models/
    ```
 4. The board should run in a high-performance state during testing. CPU governor and BPU governor should be configured for performance mode.
 
