@@ -40,8 +40,14 @@
 
 ### 硬件与系统支持
 
-- **RDK X5 (Bayes-e)**：推荐使用 RDK OS >= 3.5.0（基于 Ubuntu 22.04 aarch64, TROS-Humble）。
-- **RDK S100/S600**：请参考专用仓库 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s)。
+本仓库通过不同分支区分各类板卡的交付内容、历史归档 demo 和说明文档。使用 sample 前，请先根据目标板卡选择对应分支或仓库。
+
+| 目标硬件 | 推荐分支 / 仓库 | 说明 |
+| :--- | :--- | :--- |
+| RDK X5 (Bayes-e) | `rdk_x5` | 标准 RDK X5 交付分支。推荐系统版本为 RDK OS >= 3.5.0，系统基于 Ubuntu 22.04 aarch64 和 TROS-Humble。 |
+| RDK X5 历史归档 demo | `main` | RDK X5 的历史归档 demo 保留在 `main` 分支，用于历史兼容和旧 demo 查询。 |
+| RDK X3 | `rdk_x3` | RDK X3 设备请切换到 `rdk_x3` 分支。 |
+| RDK S 系列 | `rdk_s` | RDK S 系列板卡请切换到 `rdk_s` 分支。RDK S 系列板卡的历史归档 demo 保留在 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s) 仓库。 |
 
 ---
 

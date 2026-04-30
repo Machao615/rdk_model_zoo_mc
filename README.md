@@ -40,8 +40,14 @@ The repository includes BPU-ready models across multiple AI domains and provides
 
 ### Hardware & System Support
 
-- **RDK X5 (Bayes-e)**: Recommended to use RDK OS >= 3.5.0 (Based on Ubuntu 22.04 aarch64, TROS-Humble).
-- **RDK S100/S600**: Please refer to the dedicated repository [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s).
+This repository uses hardware-specific branches to keep the maintained samples, historical demos, and release documents clearly separated. Select the branch or repository that matches your target board before running samples.
+
+| Target Hardware | Recommended Branch / Repository | Description |
+| :--- | :--- | :--- |
+| RDK X5 (Bayes-e) | `rdk_x5` | Standard delivery branch for RDK X5. Recommended system version: RDK OS >= 3.5.0, based on Ubuntu 22.04 aarch64 and TROS-Humble. |
+| RDK X5 historical demos | `main` | Historical archived demos for RDK X5 are kept in the `main` branch for reference and compatibility lookup. |
+| RDK X3 | `rdk_x3` | Switch to the `rdk_x3` branch when using RDK X3 devices. |
+| RDK S series | `rdk_s` | Switch to the `rdk_s` branch when using RDK S series boards. Historical archived demos for RDK S series boards are kept in [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s). |
 
 ---
 
