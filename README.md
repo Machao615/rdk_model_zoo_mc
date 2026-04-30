@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="resource/imgs/model_zoo_logo.jpg" width="60%" alt="RDK Model Zoo Logo"/>
+  <img src="docs/assets/model_zoo_logo.jpg" width="60%" alt="RDK Model Zoo Logo"/>
 </div>
 
 <div align="center">
@@ -97,8 +97,8 @@ rdk_model_zoo/
 |       `-- video/
 |-- docs/                  # Project guidelines and reference documentation
 |-- datasets/              # Sample datasets and download scripts
+|-- tros/                  # TROS integration guides and examples
 |-- utils/                 # Shared C++ / Python utilities
-`-- resource/              # Static resources (images, logos, etc.)
 ```
 </details>
 
@@ -118,7 +118,7 @@ bash run.sh
 
 **Inference Result:**
 <div align="center">
-  <img src="resource/imgs/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
+  <img src="docs/assets/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
 </div>
 
 ---

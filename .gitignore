@@ -21,9 +21,9 @@
 
 *zip
 *tar.gz
-resource/datasets/COCO2017/annotations/*
-resource/datasets/COCO2017/val2017/*
-resource/datasets/ImageNet/val_images/*
+datasets/coco/annotations/*
+datasets/coco/val2017/*
+datasets/imagenet/val_images/*
 
 demos/detect/YOLO11/YOLO11-Detect_YUV420SP/eval/*
 

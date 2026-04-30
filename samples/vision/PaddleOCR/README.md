@@ -23,7 +23,7 @@ The examples provided in this repository are based on the algorithm structure fr
 
 GitHub: https://github.com/PaddlePaddle/PaddleOCR
 
-![alt text](../../../resource/imgs/paddleocr.png)
+![alt text](./test_data/paddleocr.png)
 
 
 ## 2. Performance data

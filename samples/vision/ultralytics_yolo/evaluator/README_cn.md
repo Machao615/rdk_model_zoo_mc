@@ -18,8 +18,8 @@
 
 评测脚本默认使用以下数据集路径：
 
-- **检测 / 分割 / 姿态**：[COCO2017 val](../../../../resource/datasets/COCO2017/README.md)
-- **分类**：[ImageNet val](../../../../resource/datasets/ImageNet/README.md)
+- **检测 / 分割 / 姿态**：[COCO val](../../../../datasets/coco/README.md)
+- **分类**：[ImageNet val](../../../../datasets/imagenet/README.md)
 
 请在运行脚本前确认数据集已经按默认目录准备完成。
 
@@ -32,7 +32,7 @@
 ```bash
 python3 eval_Ultralytics_YOLO_Detect_YUV420SP.py \
   --model-path source/reference_bin_models/det/yolo12n_detect_bayes-e_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/COCO2017/val2017 \
+  --image-path ../../../../datasets/coco/val2017 \
   --json-path yolo12n_detect_bayes-e_640x640_nv12_py_coco2017_val_pridect.json
 ```
 
@@ -43,7 +43,7 @@ python3 eval_Ultralytics_YOLO_Detect_YUV420SP.py \
 ```bash
 python3 eval_Ultralytics_YOLO_Seg_YUV420SP.py \
   --model-path source/reference_bin_models/seg/yolo11n-seg_detect_bayes-e_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/COCO2017/val2017 \
+  --image-path ../../../../datasets/coco/val2017 \
   --json-path yolo11n_seg2_bayese_640x640_nv12_coco2017_val_pridect_0_5.json
 ```
 
@@ -54,7 +54,7 @@ python3 eval_Ultralytics_YOLO_Seg_YUV420SP.py \
 ```bash
 python3 eval_Ultralytics_YOLO_Pose_YUV420SP.py \
   --model-path source/reference_bin_models/pose/yolov8n-pose_detect_bayes-e_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/COCO2017/val2017 \
+  --image-path ../../../../datasets/coco/val2017 \
   --json-path yolov8n-pose_detect_bayes-e_640x640_nv12_py_coco2017_val_pridect.json
 ```
 
@@ -65,7 +65,7 @@ python3 eval_Ultralytics_YOLO_Pose_YUV420SP.py \
 ```bash
 python3 eval_Ultralytics_YOLO_Classify_YUV420SP.py \
   --model-path source/reference_bin_models/cls/yolo11n_cls_detect_bayese_640x640_nv12.bin \
-  --image-path ../../../resource/datasets/ImageNet/val_images \
+  --image-path ../../../../datasets/imagenet/val_images \
   --json-path yolo11n_cls_detect_bayese_640x640_nv12_py_coco2017_val_pridect.json
 ```
 
@@ -316,7 +316,7 @@ python3 eval_batch.py \
 3. 性能测试命令示例：
    ```bash
    hrt_model_exec perf --thread_num 2 --model_file yolov8n_detect_bayese_640x640_nv12_modified.bin
-   python3 ../../../resource/tools/batch_perf/batch_perf.py --max 3 --file source/reference_hbm_models/
+   python3 ../../../../utils/tools/batch_perf/batch_perf.py --max 3 --file source/reference_hbm_models/
    ```
 4. 测试时建议将开发板设置到高性能状态，包括 CPU governor 和 BPU governor 的性能模式。
 
