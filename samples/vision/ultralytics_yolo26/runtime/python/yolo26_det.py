@@ -20,19 +20,19 @@ preprocessing (Letterbox -> NV12), forward inference, and postprocessing
 (Anchor-Free decoding + NMS).
 """
 
-import time
 import logging
+import time
+from dataclasses import dataclass, field
+from typing import List, Tuple
+
 import cv2
 import numpy as np
-from dataclasses import dataclass, field
-from typing import List, Tuple, Optional, Union
 
-# Import hobot_dnn, handling potential import errors gracefully in main scope if needed,
-# but here we assume it's available as per the sample requirements.
 try:
     from hobot_dnn import pyeasy_dnn as dnn
 except ImportError:
     from hobot_dnn_rdkx5 import pyeasy_dnn as dnn
+
 
 # Configure logger
 logger = logging.getLogger("YOLO26")
@@ -49,6 +49,7 @@ class YOLO26Config:
         nms_thres (float): IoU threshold for Non-Maximum Suppression.
         strides (List[int]): List of strides for the feature maps.
     """
+
     model_path: str
     classes_num: int = 80
     score_thres: float = 0.25
@@ -80,26 +81,32 @@ class YOLO26Detect:
         try:
             t0 = time.time()
             self.model = dnn.load(self.cfg.model_path)[0]
-            logger.info(f"\033[1;31mLoad D-Robotics Quantize model time = {1000 * (time.time() - t0):.2f} ms\033[0m")
-        except Exception as e:
-            logger.error(f"❌ Failed to load model: {e}")
-            raise e
+            logger.info(
+                "\033[1;31mLoad D-Robotics Quantize model time = %.2f ms\033[0m",
+                1000 * (time.time() - t0),
+            )
+        except Exception:
+            logger.exception("Failed to load model")
+            raise
 
         # Get Input Shape (NCHW or NHWC)
         shape = self.model.inputs[0].properties.shape
-        if shape[3] == 3:  # NHWC
+        if len(shape) != 4:
+            raise ValueError(f"Unsupported input shape: {shape}")
+
+        if shape[3] == 3:
             self.m_h, self.m_w = shape[1], shape[2]
-        else:  # NCHW
+        else:
             self.m_h, self.m_w = shape[2], shape[3]
 
         # Pre-compute Anchor-Free Grids
         logger.info("Pre-computing Anchor-Free Grids...")
         self.grids = {}
-        for s in self.cfg.strides:
-            grid_h, grid_w = self.m_h // s, self.m_w // s
+        for stride in self.cfg.strides:
+            grid_h, grid_w = self.m_h // stride, self.m_w // stride
             # np.indices returns (y_grid, x_grid), we need (x, y) order, so [::-1]
             grid = np.stack(np.indices((grid_h, grid_w))[::-1], axis=-1)
-            self.grids[s] = grid.reshape(-1, 2).astype(np.float32) + 0.5
+            self.grids[stride] = grid.reshape(-1, 2).astype(np.float32) + 0.5
 
         # Initialize preprocessing state variables
         self.scale = 1.0
@@ -119,35 +126,50 @@ class YOLO26Detect:
         Returns:
             np.ndarray: Flattened NV12 data ready for inference.
         """
+
+        if img is None or img.ndim != 3 or img.shape[2] != 3:
+            raise ValueError("img must be a BGR image with shape HxWx3")
+
         t0 = time.time()
         self.orig_h, self.orig_w = img.shape[:2]
-        
+        if self.orig_h <= 0 or self.orig_w <= 0:
+            raise ValueError(f"Invalid image shape: {img.shape}")
+
         # Calculate scaling and padding
         self.scale = min(self.m_h / self.orig_h, self.m_w / self.orig_w)
-        nw, nh = int(self.orig_w * self.scale), int(self.orig_h * self.scale)
-        self.x_shift, self.y_shift = (self.m_w - nw) // 2, (self.m_h - nh) // 2
+        nw = max(int(self.orig_w * self.scale), 1)
+        nh = max(int(self.orig_h * self.scale), 1)
+        self.x_shift = (self.m_w - nw) // 2
+        self.y_shift = (self.m_h - nh) // 2
 
         # Resize and Pad
         resized_img = cv2.resize(img, (nw, nh))
         input_tensor = cv2.copyMakeBorder(
             resized_img,
-            self.y_shift, self.m_h - nh - self.y_shift,
-            self.x_shift, self.m_w - nw - self.x_shift,
-            cv2.BORDER_CONSTANT, value=127
+            self.y_shift,
+            self.m_h - nh - self.y_shift,
+            self.x_shift,
+            self.m_w - nw - self.x_shift,
+            cv2.BORDER_CONSTANT,
+            value=(127, 127, 127),
         )
 
         # Convert to NV12
         yuv = cv2.cvtColor(input_tensor, cv2.COLOR_BGR2YUV_I420).flatten()
         nv12 = np.empty((self.m_h * self.m_w * 3 // 2,), dtype=np.uint8)
         y_size = self.m_h * self.m_w
+        uv_size = y_size // 4
         nv12[:y_size] = yuv[:y_size]
-        nv12[y_size::2] = yuv[y_size:y_size + y_size // 4]
-        nv12[y_size + 1::2] = yuv[y_size + y_size // 4:]
+        nv12[y_size::2] = yuv[y_size : y_size + uv_size]
+        nv12[y_size + 1 :: 2] = yuv[y_size + uv_size :]
 
-        logger.info(f"\033[1;31mpre process(Letterbox -> NV12) time = {1000 * (time.time() - t0):.2f} ms\033[0m")
+        logger.info(
+            "\033[1;31mpre process(Letterbox -> NV12) time = %.2f ms\033[0m",
+            1000 * (time.time() - t0),
+        )
         return nv12
 
-    def forward(self, nv12: np.ndarray) -> List[np.ndarray]:
+    def forward(self, nv12: np.ndarray):
         """Run forward inference.
 
         Args:
@@ -156,10 +178,14 @@ class YOLO26Detect:
         Returns:
             List[np.ndarray]: Raw model outputs.
         """
+
         t0 = time.time()
-        out = self.model.forward(nv12)
-        logger.info(f"\033[1;31mforward time = {1000 * (time.time() - t0):.2f} ms\033[0m")
-        return out
+        outputs = self.model.forward(nv12)
+        logger.info(
+            "\033[1;31mforward time = %.2f ms\033[0m",
+            1000 * (time.time() - t0),
+        )
+        return outputs
 
     def post_process(self, outputs) -> List[Tuple[int, float, int, int, int, int]]:
         """Process model outputs to generate detection results.
@@ -172,11 +198,16 @@ class YOLO26Detect:
         Returns:
             List[Tuple]: Detected objects formatted as (class_id, score, x1, y1, x2, y2).
         """
+
         t0 = time.time()
-        
-        # Check output shape assumption
+
+        if len(outputs) < 6:
+            raise ValueError(f"Expected at least 6 model outputs, got {len(outputs)}")
+
         if outputs[1].buffer.shape[-1] != 4:
-            logger.warning("⚠️ Model output shape mismatch! Expected index 1, 3, 5 to be 4 (bbox).")
+            logger.warning(
+                "Model output shape mismatch: expected indexes 1, 3, 5 to be bbox outputs"
+            )
 
         dets = []
         # Group outputs: Cls [0, 2, 4], Box [1, 3, 5] corresponding to strides 8, 16, 32
@@ -198,41 +229,54 @@ class YOLO26Detect:
 
             # xyxy calculation: (grid +/- box) * stride
             xyxy = np.hstack([(grid - v_box[:, :2]), (grid + v_box[:, 2:])]) * stride
-            
+
             # Append to detections
             dets.extend(np.hstack([xyxy, v_score[:, None], v_id[:, None]]))
 
         final_res = []
         if dets:
-            dets = np.array(dets)
+            dets = np.asarray(dets)
             # Apply NMS per class
-            for i in np.unique(dets[:, 5]):
-                cls_dets = dets[dets[:, 5] == i]
+            for class_id in np.unique(dets[:, 5]):
+                cls_dets = dets[dets[:, 5] == class_id]
                 # Convert xyxy to xywh for NMS
                 xywh = cls_dets[:, :4].copy()
                 xywh[:, 2:] -= xywh[:, :2]
-                
+
                 indices = cv2.dnn.NMSBoxes(
-                    xywh.tolist(), 
-                    cls_dets[:, 4].tolist(), 
-                    self.cfg.score_thres, 
-                    self.cfg.nms_thres
+                    xywh.tolist(),
+                    cls_dets[:, 4].tolist(),
+                    self.cfg.score_thres,
+                    self.cfg.nms_thres,
                 )
 
-                if len(indices) > 0:
-                    for idx in indices.flatten():
-                        d = cls_dets[idx]
-                        # Rescale coords back to original image
-                        x1, y1, x2, y2 = (d[:4] - [self.x_shift, self.y_shift, self.x_shift, self.y_shift]) / self.scale
-                        
-                        final_res.append((
+                if len(indices) == 0:
+                    continue
+
+                for idx in np.asarray(indices).flatten():
+                    d = cls_dets[int(idx)]
+                    # Rescale coords back to original image
+                    x1, y1, x2, y2 = (
+                        d[:4]
+                        - [self.x_shift, self.y_shift, self.x_shift, self.y_shift]
+                    ) / self.scale
+
+                    final_res.append(
+                        (
                             int(d[5]),  # class_id
-                            d[4],       # score
+                            float(d[4]),  # score
                             int(np.clip(x1, 0, self.orig_w)),
                             int(np.clip(y1, 0, self.orig_h)),
                             int(np.clip(x2, 0, self.orig_w)),
-                            int(np.clip(y2, 0, self.orig_h))
-                        ))
+                            int(np.clip(y2, 0, self.orig_h)),
+                        )
+                    )
+
+        logger.info(
+            "\033[1;31mpost process time = %.2f ms\033[0m",
+            1000 * (time.time() - t0),
+        )
+        return final_res
 
     def predict(self, img: np.ndarray) -> List[Tuple[int, float, int, int, int, int]]:
         """End-to-end prediction pipeline.
@@ -243,10 +287,10 @@ class YOLO26Detect:
         Returns:
             List[Tuple]: Detected objects formatted as (class_id, score, x1, y1, x2, y2).
         """
+
         nv12 = self.pre_process(img)
         outputs = self.forward(nv12)
-        results = self.post_process(outputs)
-        return results
+        return self.post_process(outputs)
 
     def __call__(self, img: np.ndarray) -> List[Tuple[int, float, int, int, int, int]]:
         """Callable interface for prediction.
