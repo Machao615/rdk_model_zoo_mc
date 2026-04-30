@@ -62,36 +62,36 @@ This repository uses hardware-specific branches to keep maintained samples, lega
 rdk_model_zoo/
 |-- samples/
 |   |-- vision/
-|   |   |-- clip/
-|   |   |-- convnext/
-|   |   |-- edgenext/
-|   |   |-- efficientformer/
-|   |   |-- efficientformerv2/
-|   |   |-- efficientnet/
-|   |   |-- efficientvit/
-|   |   |-- fasternet/
-|   |   |-- fastvit/
-|   |   |-- fcos/
-|   |   |-- googlenet/
-|   |   |-- lprnet/
-|   |   |-- mobilenetv1/
-|   |   |-- mobilenetv2/
-|   |   |-- mobilenetv3/
-|   |   |-- mobilenetv4/
-|   |   |-- mobileone/
-|   |   |-- modnet/
-|   |   |-- paddleocr/
-|   |   |-- repghost/
-|   |   |-- repvgg/
-|   |   |-- repvit/
-|   |   |-- resnet/
-|   |   |-- resnext/
-|   |   |-- ultralytics_yolo/
-|   |   |-- ultralytics_yolo26/
-|   |   |-- vargconvnet/
-|   |   |-- yoloe/
-|   |   |-- yolov5/
-|   |   `-- yoloworld/
+|   |   |-- clip/                 # Image-text multimodal matching
+|   |   |-- convnext/             # Image classification
+|   |   |-- edgenext/             # Image classification
+|   |   |-- efficientformer/      # Image classification
+|   |   |-- efficientformerv2/    # Image classification
+|   |   |-- efficientnet/         # Image classification
+|   |   |-- efficientvit/         # Image classification
+|   |   |-- fasternet/            # Image classification
+|   |   |-- fastvit/              # Image classification
+|   |   |-- fcos/                 # Object detection
+|   |   |-- googlenet/            # Image classification
+|   |   |-- lprnet/               # License plate recognition
+|   |   |-- mobilenetv1/          # Image classification
+|   |   |-- mobilenetv2/          # Image classification
+|   |   |-- mobilenetv3/          # Image classification
+|   |   |-- mobilenetv4/          # Image classification
+|   |   |-- mobileone/            # Image classification
+|   |   |-- modnet/               # Image matting
+|   |   |-- paddleocr/            # OCR text detection and recognition
+|   |   |-- repghost/             # Image classification
+|   |   |-- repvgg/               # Image classification
+|   |   |-- repvit/               # Image classification
+|   |   |-- resnet/               # Image classification
+|   |   |-- resnext/              # Image classification
+|   |   |-- ultralytics_yolo/     # Detection, segmentation, pose, classification
+|   |   |-- ultralytics_yolo26/   # Detection, segmentation, pose, classification
+|   |   |-- vargconvnet/          # Image classification
+|   |   |-- yoloe/                # Instance segmentation
+|   |   |-- yolov5/               # Object detection
+|   |   `-- yoloworld/           # Open-vocabulary object detection
 |-- docs/                  # Project guidelines and reference documentation
 |-- datasets/              # Sample datasets and download scripts
 |-- tros/                  # TROS integration guides and examples
@@ -153,8 +153,8 @@ python3 main.py \
 | Image Classification | VargConvNet | `samples/vision/vargconvnet` | RDK X5 | [Details](./samples/vision/vargconvnet) |
 | Object Detection | FCOS | `samples/vision/fcos` | RDK X5 | [Details](./samples/vision/fcos) |
 | Object Detection | YOLOv5 | `samples/vision/yolov5` | RDK X5 | [Details](./samples/vision/yolov5) |
-| Object Detection / Instance Segmentation / Pose Estimation / Image Classification | Ultralytics YOLO | `samples/vision/ultralytics_yolo` | RDK X5 | [Details](./samples/vision/ultralytics_yolo) |
-| Object Detection / Instance Segmentation / Pose Estimation / Image Classification | YOLO26 | `samples/vision/ultralytics_yolo26` | RDK X5 | [Details](./samples/vision/ultralytics_yolo26) |
+| Object Detection / Instance Segmentation / Pose Estimation / Image Classification | Ultralytics YOLO (`YOLOv5u / YOLOv8 / YOLOv9 / YOLOv10 / YOLO11 / YOLO12 / YOLO13`) | `samples/vision/ultralytics_yolo` | RDK X5 | [Details](./samples/vision/ultralytics_yolo) |
+| Object Detection / Instance Segmentation / Pose Estimation / Image Classification | Ultralytics YOLO26 | `samples/vision/ultralytics_yolo26` | RDK X5 | [Details](./samples/vision/ultralytics_yolo26) |
 | Instance Segmentation | YOLOE | `samples/vision/yoloe` | RDK X5 | [Details](./samples/vision/yoloe) |
 | Image Matting | MODNet | `samples/vision/modnet` | RDK X5 | [Details](./samples/vision/modnet) |
 | OCR Text Detection and Recognition | PaddleOCR | `samples/vision/paddleocr` | RDK X5 | [Details](./samples/vision/paddleocr) |
