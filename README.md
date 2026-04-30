@@ -118,7 +118,7 @@ bash run.sh
 
 **Inference Result:**
 <div align="center">
-  <img src="docs/assets/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
+  <img src="samples/vision/yolov5/test_data/inference.jpg" width="80%" alt="YOLOv5 Inference Result"/>
 </div>
 
 ---
