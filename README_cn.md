@@ -112,16 +112,23 @@ rdk_model_zoo/
    - 确保 RDK 板卡上电并可通过 SSH 或 VSCode Remote SSH 访问。
 3. **先阅读对应 README**
    - 进入目标目录后先阅读 `README.md` / `README_cn.md`，再执行命令。
-4. **运行 sample**
+4. **运行 Ultralytics YOLO11x 检测 sample**
 
 ```bash
-cd samples/vision/yolov5/runtime/python
-bash run.sh
+cd samples/vision/ultralytics_yolo/model
+wget -nc https://archive.d-robotics.cc/downloads/rdk_model_zoo/rdk_x5/ultralytics_YOLO/yolo11x_detect_bayese_640x640_nv12.bin
+
+cd ../runtime/python
+python3 main.py \
+  --task detect \
+  --model-path ../../model/yolo11x_detect_bayese_640x640_nv12.bin \
+  --test-img ../../../../../datasets/coco/assets/bus.jpg \
+  --img-save-path ../../test_data/inference_yolo11x.jpg
 ```
 
 **推理结果示例：**
 <div align="center">
-  <img src="docs/assets/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
+  <img src="samples/vision/ultralytics_yolo/test_data/inference_yolo11x.jpg" width="80%" alt="YOLO11x Inference Result"/>
 </div>
 
 ---
