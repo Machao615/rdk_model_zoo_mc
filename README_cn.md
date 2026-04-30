@@ -62,36 +62,36 @@
 rdk_model_zoo/
 |-- samples/
 |   |-- vision/
-|   |   |-- clip/
-|   |   |-- convnext/
-|   |   |-- edgenext/
-|   |   |-- efficientformer/
-|   |   |-- efficientformerv2/
-|   |   |-- efficientnet/
-|   |   |-- efficientvit/
-|   |   |-- fasternet/
-|   |   |-- fastvit/
-|   |   |-- fcos/
-|   |   |-- googlenet/
-|   |   |-- lprnet/
-|   |   |-- mobilenetv1/
-|   |   |-- mobilenetv2/
-|   |   |-- mobilenetv3/
-|   |   |-- mobilenetv4/
-|   |   |-- mobileone/
-|   |   |-- modnet/
-|   |   |-- paddleocr/
-|   |   |-- repghost/
-|   |   |-- repvgg/
-|   |   |-- repvit/
-|   |   |-- resnet/
-|   |   |-- resnext/
-|   |   |-- ultralytics_yolo/
-|   |   |-- ultralytics_yolo26/
-|   |   |-- vargconvnet/
-|   |   |-- yoloe/
-|   |   |-- yolov5/
-|   |   `-- yoloworld/
+|   |   |-- clip/                 # 图文多模态匹配
+|   |   |-- convnext/             # 图像分类
+|   |   |-- edgenext/             # 图像分类
+|   |   |-- efficientformer/      # 图像分类
+|   |   |-- efficientformerv2/    # 图像分类
+|   |   |-- efficientnet/         # 图像分类
+|   |   |-- efficientvit/         # 图像分类
+|   |   |-- fasternet/            # 图像分类
+|   |   |-- fastvit/              # 图像分类
+|   |   |-- fcos/                 # 目标检测
+|   |   |-- googlenet/            # 图像分类
+|   |   |-- lprnet/               # 车牌识别
+|   |   |-- mobilenetv1/          # 图像分类
+|   |   |-- mobilenetv2/          # 图像分类
+|   |   |-- mobilenetv3/          # 图像分类
+|   |   |-- mobilenetv4/          # 图像分类
+|   |   |-- mobileone/            # 图像分类
+|   |   |-- modnet/               # 图像抠图
+|   |   |-- paddleocr/            # OCR 文字检测与识别
+|   |   |-- repghost/             # 图像分类
+|   |   |-- repvgg/               # 图像分类
+|   |   |-- repvit/               # 图像分类
+|   |   |-- resnet/               # 图像分类
+|   |   |-- resnext/              # 图像分类
+|   |   |-- ultralytics_yolo/     # 检测、分割、姿态、分类
+|   |   |-- ultralytics_yolo26/   # 检测、分割、姿态、分类
+|   |   |-- vargconvnet/          # 图像分类
+|   |   |-- yoloe/                # 实例分割
+|   |   |-- yolov5/               # 目标检测
+|   |   `-- yoloworld/           # 开放词表目标检测
 |-- docs/                  # 项目规范与参考文档
 |-- datasets/              # 数据集与下载脚本
 |-- tros/                  # TROS 集成指南与示例
@@ -156,8 +156,8 @@ python3 main.py \
 | 图像分类 | VargConvNet | `samples/vision/vargconvnet` | RDK X5 | [详情](./samples/vision/vargconvnet) |
 | 目标检测 | FCOS | `samples/vision/fcos` | RDK X5 | [详情](./samples/vision/fcos) |
 | 目标检测 | YOLOv5 | `samples/vision/yolov5` | RDK X5 | [详情](./samples/vision/yolov5) |
-| 目标检测 / 实例分割 / 姿态估计 / 图像分类 | Ultralytics YOLO | `samples/vision/ultralytics_yolo` | RDK X5 | [详情](./samples/vision/ultralytics_yolo) |
-| 目标检测 / 实例分割 / 姿态估计 / 图像分类 | YOLO26 | `samples/vision/ultralytics_yolo26` | RDK X5 | [详情](./samples/vision/ultralytics_yolo26) |
+| 目标检测 / 实例分割 / 姿态估计 / 图像分类 | Ultralytics YOLO（`YOLOv5u / YOLOv8 / YOLOv9 / YOLOv10 / YOLO11 / YOLO12 / YOLO13`） | `samples/vision/ultralytics_yolo` | RDK X5 | [详情](./samples/vision/ultralytics_yolo) |
+| 目标检测 / 实例分割 / 姿态估计 / 图像分类 | Ultralytics YOLO26 | `samples/vision/ultralytics_yolo26` | RDK X5 | [详情](./samples/vision/ultralytics_yolo26) |
 | 实例分割 | YOLOE | `samples/vision/yoloe` | RDK X5 | [详情](./samples/vision/yoloe) |
 | 图像抠图 | MODNet | `samples/vision/modnet` | RDK X5 | [详情](./samples/vision/modnet) |
 | OCR 文字检测与识别 | PaddleOCR | `samples/vision/paddleocr` | RDK X5 | [详情](./samples/vision/paddleocr) |
