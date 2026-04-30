@@ -11,7 +11,7 @@
 
 <div align="center">
 
-**English** | [Simplified Chinese](./README_cn.md)
+**English** | [简体中文](./README_cn.md)
 
 <p align="center">
   <a href="https://github.com/D-Robotics/rdk_model_zoo/stargazers"><img src="https://img.shields.io/github/stars/D-Robotics/rdk_model_zoo?style=flat-square&logo=github&color=blue" alt="Stars"></a>
@@ -36,18 +36,18 @@ The repository includes BPU-ready models across multiple AI domains and provides
 - 🚀 **Quick BPU Adoption**: Provides out-of-the-box inference pipelines to help users complete BPU inference validation and performance evaluation in the shortest time.
 - 🧩 **Complete End-to-End Examples**: Covers the entire process from algorithm export and fixed-point quantization to efficient on-board execution (`.bin` / `.hbm`). Includes model loading, preprocessing, BPU inference execution, post-processing, and result visualization.
 - 📐 **Standardized Design & Documentation**: Provides unified directory structures and sample code specifications, supporting Python (`hbm_runtime`) and C/C++ interfaces for easy understanding, secondary development, and reduced integration/maintenance costs.
-- 🌐 **Full Scenario Coverage**: Covers classification, detection, segmentation, pose estimation, OCR, multi-modal models, and end-to-end solutions.
+- 🌐 **Full Scenario Coverage**: Covers classification, detection, segmentation, pose estimation, OCR, and multi-modal models.
 
 ### Hardware & System Support
 
-This repository uses hardware-specific branches to keep the maintained samples, historical demos, and release documents clearly separated. Select the branch or repository that matches your target board before running samples.
+This repository uses hardware-specific branches to keep maintained samples, legacy demos, and board-specific documents clearly separated. The current `rdk_x5` branch is the primary delivery branch for RDK X5. The previous `main` branch has been renamed to `rdk_x5_legacy` and is kept only as the historical archive branch.
 
 | Target Hardware | Recommended Branch / Repository | Description |
 | :--- | :--- | :--- |
-| RDK X5 (Bayes-e) | `rdk_x5` | Standard delivery branch for RDK X5. Recommended system version: RDK OS >= 3.5.0, based on Ubuntu 22.04 aarch64 and TROS-Humble. |
-| RDK X5 historical demos | `main` | Historical archived demos for RDK X5 are kept in the `main` branch for reference and compatibility lookup. |
-| RDK X3 | `rdk_x3` | Switch to the `rdk_x3` branch when using RDK X3 devices. |
-| RDK S series | `rdk_s` | Switch to the `rdk_s` branch when using RDK S series boards. Historical archived demos for RDK S series boards are kept in [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s). |
+| RDK X5 (Bayes-e) | [`rdk_x5`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5) | Primary delivery branch for RDK X5. Recommended system version: RDK OS >= 3.5.0, based on Ubuntu 22.04 aarch64 and TROS-Humble. |
+| RDK X5 legacy demos | [`rdk_x5_legacy`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5_legacy) | Historical archive branch for the previous RDK X5 demos. Use it only when you need to reference legacy demo content. |
+| RDK X3 | [`rdk_x3`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x3) | Branch for RDK X3 devices. |
+| RDK S series | [`rdk_s`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_s) | Branch for RDK S series boards. Historical archived demos for RDK S series boards are kept in [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s). |
 
 ---
 
@@ -92,9 +92,6 @@ rdk_model_zoo/
 |   |   |-- yoloe/
 |   |   |-- yolov5/
 |   |   `-- yoloworld/
-|   `-- solutions/
-|       |-- llm/
-|       `-- video/
 |-- docs/                  # Project guidelines and reference documentation
 |-- datasets/              # Sample datasets and download scripts
 |-- tros/                  # TROS integration guides and examples
@@ -158,22 +155,14 @@ python3 main.py \
 | **Classification** | VargConvNet | [Code](./samples/vision/vargconvnet) |
 | **Object Detection** | FCOS | [Code](./samples/vision/fcos) |
 | **Object Detection** | YOLOv5 | [Code](./samples/vision/yolov5) |
-| **Ultralytics YOLO** | YOLOv5u, YOLOv8, YOLOv9, YOLOv10, YOLO11, YOLO12, YOLO13, YOLO26 | [Code](./samples/vision/ultralytics_yolo), [YOLO26](./samples/vision/ultralytics_yolo26) |
+| **Ultralytics YOLO** | YOLOv5u, YOLOv8, YOLOv9, YOLOv10, YOLO11, YOLO12, YOLO13 | [Code](./samples/vision/ultralytics_yolo) |
+| **Ultralytics YOLO** | YOLO26 | [Code](./samples/vision/ultralytics_yolo26) |
 | **Instance Segmentation** | YOLOE | [Code](./samples/vision/yoloe) |
 | **Matting** | MODNet | [Code](./samples/vision/modnet) |
 | **OCR** | PaddleOCR | [Code](./samples/vision/paddleocr) |
 | **Recognition** | LPRNet | [Code](./samples/vision/lprnet) |
 | **Multimodal** | CLIP | [Code](./samples/vision/clip) |
 | **Multimodal** | YOLOWorld | [Code](./samples/vision/yoloworld) |
-
-### Solution Samples
-
-| Category | Samples | Path |
-| :--- | :--- | :---: |
-| **LLM Solution** | RDK LLM Solution | [Code](./samples/solutions/llm) |
-| **Video Solution** | RDK Video Solution | [Code](./samples/solutions/video) |
-
----
 
 ## Documentation & Resources
 

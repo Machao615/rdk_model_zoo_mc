@@ -36,18 +36,18 @@
 - 🚀 **快速把 BPU 用起来**：提供开箱即用的推理 Pipeline，帮助用户在最短时间内完成 BPU 推理验证及性能评估。
 - 🧩 **完整端到端示例**：覆盖从算法导出、定点量化转换到板端高效运行（`.bin` / `.hbm`）的全过程。包含模型加载、前处理、BPU 推理执行、后处理与结果可视化。
 - 📐 **规范化设计与接口文档**：提供统一的目录结构与示例代码规范，支持 Python（`hbm_runtime`）与 C/C++ 接口，便于快速理解和二次开发，降低集成与维护成本。
-- 🌐 **全场景覆盖**：涵盖分类、检测、分割、姿态估计、OCR、多模态模型以及端到端解决方案。
+- 🌐 **全场景覆盖**：涵盖分类、检测、分割、姿态估计、OCR 以及多模态模型。
 
 ### 硬件与系统支持
 
-本仓库通过不同分支区分各类板卡的交付内容、历史归档 demo 和说明文档。使用 sample 前，请先根据目标板卡选择对应分支或仓库。
+本仓库通过不同分支区分各类板卡的交付内容、历史归档 demo 和说明文档。当前 `rdk_x5` 分支将作为 RDK X5 的主交付分支；原 `main` 分支已变更为 `rdk_x5_legacy`，仅用于历史 demo 归档。
 
 | 目标硬件 | 推荐分支 / 仓库 | 说明 |
 | :--- | :--- | :--- |
-| RDK X5 (Bayes-e) | `rdk_x5` | 标准 RDK X5 交付分支。推荐系统版本为 RDK OS >= 3.5.0，系统基于 Ubuntu 22.04 aarch64 和 TROS-Humble。 |
-| RDK X5 历史归档 demo | `main` | RDK X5 的历史归档 demo 保留在 `main` 分支，用于历史兼容和旧 demo 查询。 |
-| RDK X3 | `rdk_x3` | RDK X3 设备请切换到 `rdk_x3` 分支。 |
-| RDK S 系列 | `rdk_s` | RDK S 系列板卡请切换到 `rdk_s` 分支。RDK S 系列板卡的历史归档 demo 保留在 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s) 仓库。 |
+| RDK X5 (Bayes-e) | [`rdk_x5`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5) | RDK X5 主交付分支。推荐系统版本为 RDK OS >= 3.5.0，系统基于 Ubuntu 22.04 aarch64 和 TROS-Humble。 |
+| RDK X5 历史归档 demo | [`rdk_x5_legacy`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5_legacy) | 原 RDK X5 历史 demo 归档分支，仅用于历史兼容和旧 demo 查询。 |
+| RDK X3 | [`rdk_x3`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x3) | RDK X3 设备请切换到该分支。 |
+| RDK S 系列 | [`rdk_s`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_s) | RDK S 系列板卡请切换到该分支。RDK S 系列板卡的历史归档 demo 保留在 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s) 仓库。 |
 
 ---
 
@@ -92,9 +92,6 @@ rdk_model_zoo/
 |   |   |-- yoloe/
 |   |   |-- yolov5/
 |   |   `-- yoloworld/
-|   `-- solutions/
-|       |-- llm/
-|       `-- video/
 |-- docs/                  # 项目规范与参考文档
 |-- datasets/              # 数据集与下载脚本
 |-- tros/                  # TROS 集成指南与示例
@@ -161,22 +158,14 @@ python3 main.py \
 | **分类** | VargConvNet | [Code](./samples/vision/vargconvnet) |
 | **检测** | FCOS | [Code](./samples/vision/fcos) |
 | **检测** | YOLOv5 | [Code](./samples/vision/yolov5) |
-| **Ultralytics YOLO** | YOLOv5u、YOLOv8、YOLOv9、YOLOv10、YOLO11、YOLO12、YOLO13、YOLO26 | [Code](./samples/vision/ultralytics_yolo)、[YOLO26](./samples/vision/ultralytics_yolo26) |
+| **Ultralytics YOLO** | YOLOv5u、YOLOv8、YOLOv9、YOLOv10、YOLO11、YOLO12、YOLO13 | [Code](./samples/vision/ultralytics_yolo) |
+| **Ultralytics YOLO** | YOLO26 | [Code](./samples/vision/ultralytics_yolo26) |
 | **实例分割** | YOLOE | [Code](./samples/vision/yoloe) |
 | **抠图** | MODNet | [Code](./samples/vision/modnet) |
 | **OCR** | PaddleOCR | [Code](./samples/vision/paddleocr) |
 | **识别** | LPRNet | [Code](./samples/vision/lprnet) |
 | **多模态** | CLIP | [Code](./samples/vision/clip) |
 | **多模态** | YOLOWorld | [Code](./samples/vision/yoloworld) |
-
-### 解决方案 Samples
-
-| 类别 | Sample | 路径 |
-| :--- | :--- | :---: |
-| **LLM 解决方案** | RDK LLM Solution | [Code](./samples/solutions/llm) |
-| **视频解决方案** | RDK Video Solution | [Code](./samples/solutions/video) |
-
----
 
 ## 文档说明与学习资源
 
@@ -187,7 +176,7 @@ python3 main.py \
 - **源码参考**
   - 如需了解代码级接口说明，请参考 **[源码文档说明](./docs/source_reference/README.md)**。
 - **开发规范**
-  - 如需新增或重构 Sample，请先阅读 **[Model Zoo 仓库规范指南](./docs/Model_Zoo_Repository_Guidelines.md)**。
+  - 如需新增或开发 Sample，请先阅读 **[Model Zoo 仓库规范指南](./docs/Model_Zoo_Repository_Guidelines.md)**。
 - **工具链文档**
   - [RDK X5 算法工具链文档](https://developer.d-robotics.cc/api/v1/fileData/x5_doc-v126cn/index.html)
   - [RDK X3 算法工具链文档](https://developer.d-robotics.cc/api/v1/fileData/horizon_xj3_open_explorer_cn_doc/index.html)
