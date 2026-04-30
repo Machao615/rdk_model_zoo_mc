@@ -49,7 +49,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../../../"))
 MODEL_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../model"))
 TEST_DATA_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../test_data"))
 DEFAULT_MODEL_PATH = os.path.join(MODEL_DIR, "fcos_efficientnetb0_detect_512x512_bayese_nv12.bin")
-DEFAULT_TEST_IMAGE = os.path.join(TEST_DATA_DIR, "bus.jpg")
+DEFAULT_TEST_IMAGE = os.path.join(PROJECT_ROOT, "datasets/coco/assets/bus.jpg")
 DEFAULT_RESULT_IMAGE = os.path.join(TEST_DATA_DIR, "result.jpg")
 DEFAULT_LABEL_FILE = os.path.join(PROJECT_ROOT, "datasets/coco/coco_classes.names")
 

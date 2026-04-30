@@ -1,4 +1,4 @@
-# Copyright (c) 2025 D-Robotics Corporation
+# Copyright (c) 2026 D-Robotics Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,6 +50,15 @@ import utils.py_utils.inspect as inspect
 import utils.py_utils.visualize as visualize
 from convnext import ConvNeXtConfig, ConvNeXt
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../../../"))
+MODEL_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../model"))
+TEST_DATA_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../test_data"))
+
+DEFAULT_MODEL_PATH = os.path.join(MODEL_DIR, "ConvNeXt_atto_224x224_nv12.bin")
+DEFAULT_LABEL_FILE = os.path.join(PROJECT_ROOT, "datasets/imagenet/imagenet_classes.names")
+DEFAULT_TEST_IMAGE = os.path.join(TEST_DATA_DIR, "cheetah.JPEG")
+
 
 def main() -> None:
     """Run ConvNeXt inference on a single image.
@@ -66,37 +75,36 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="ConvNeXt Classification Inference")
 
     # Model configuration
-    parser.add_argument('--model-path', type=str, 
-                        default="../../model/ConvNeXt_atto_224x224_nv12.bin", 
+    parser.add_argument("--model-path", type=str,
+                        default=DEFAULT_MODEL_PATH,
                         help="Path to the BPU quantized *.bin model.")
-    parser.add_argument('--label-file', type=str, 
-                        default="../../../../../datasets/imagenet/imagenet_classes.names", 
+    parser.add_argument("--label-file", type=str,
+                        default=DEFAULT_LABEL_FILE,
                         help="Path to the ImageNet class names file.")
-    parser.add_argument('--priority', type=int, default=0,
-                        help='Model priority (0~255).')
-    parser.add_argument('--bpu-cores', nargs='+', type=int, default=[0],
+    parser.add_argument("--priority", type=int, default=0,
+                        help="Model priority (0~255).")
+    parser.add_argument("--bpu-cores", nargs="+", type=int, default=[0],
                         help="BPU core indexes to run inference.")
     
     # Test data and results
-    parser.add_argument('--test-img', type=str, 
-                        default="../../test_data/cheetah.JPEG", 
+    parser.add_argument("--test-img", type=str,
+                        default=DEFAULT_TEST_IMAGE,
                         help="Path to the test input image.")
-    parser.add_argument('--img-save-path', type=str, default='result.jpg',
-                        help='Path to save output result image.')
+    parser.add_argument("--img-save-path", type=str, default="result.jpg",
+                        help="Path to save output result image.")
     
     # Inference parameters
-    parser.add_argument('--resize-type', type=int, default=1, 
+    parser.add_argument("--resize-type", type=int, default=1,
                         help="Resize strategy (0: direct, 1: letterbox).")
-    parser.add_argument('--topk', type=int, default=5, 
+    parser.add_argument("--topk", type=int, default=5,
                         help="Number of top results to return.")
 
     args = parser.parse_args()
 
     # 2. Initialize configuration and model
-    # Note: ConvNeXt internally handles label loading from label-file if provided in classes_path
     config = ConvNeXtConfig(
         model_path=args.model_path,
-        classes_path=args.label_file,
+        label_file=args.label_file,
         resize_type=args.resize_type,
         topk=args.topk
     )

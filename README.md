@@ -1,8 +1,4 @@
 <div align="center">
-  <p><b>⚠️ Note: This repository is currently undergoing migration and refactoring. Some features and documentation may be incomplete. Thank you for your patience.</b></p>
-</div>
-
-<div align="center">
   <img src="resource/imgs/model_zoo_logo.jpg" width="60%" alt="RDK Model Zoo Logo"/>
 </div>
 
@@ -15,7 +11,7 @@
 
 <div align="center">
 
-**English** | [简体中文](./README_cn.md)
+**English** | [Simplified Chinese](./README_cn.md)
 
 <p align="center">
   <a href="https://github.com/D-Robotics/rdk_model_zoo/stargazers"><img src="https://img.shields.io/github/stars/D-Robotics/rdk_model_zoo?style=flat-square&logo=github&color=blue" alt="Stars"></a>
@@ -36,20 +32,26 @@ This repository is the official collection of BPU model examples and tools (Mode
 The repository includes BPU-ready models across multiple AI domains and provides complete reference implementations from **Original Model (PyTorch/ONNX) -> Fixed-point Quantization -> Inference Execution -> Result Parsing -> Example Validation**, helping users understand and utilize BPU capabilities at minimal cost.
 
 ### Core Value
+
 - 🚀 **Quick BPU Adoption**: Provides out-of-the-box inference pipelines to help users complete BPU inference validation and performance evaluation in the shortest time.
 - 🧩 **Complete End-to-End Examples**: Covers the entire process from algorithm export and fixed-point quantization to efficient on-board execution (`.bin` / `.hbm`). Includes model loading, preprocessing, BPU inference execution, post-processing, and result visualization.
 - 📐 **Standardized Design & Documentation**: Provides unified directory structures and sample code specifications, supporting Python (`hbm_runtime`) and C/C++ interfaces for easy understanding, secondary development, and reduced integration/maintenance costs.
-- **🌐 Full Scenario Coverage**: Covers classification, detection, segmentation, pose estimation, OCR, and cutting-edge multi-modal models like LLM.
+- 🌐 **Full Scenario Coverage**: Covers classification, detection, segmentation, pose estimation, OCR, multi-modal models, and end-to-end solutions.
 
 ### Hardware & System Support
-- **RDK X5 (Bayse-e)**: Recommended to use RDK OS >= 3.5.0 (Based on Ubuntu 22.04 aarch64, TROS-Humble).
-- **RDK S100/S600**: Please refer to the dedicated repository [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s).
+
+This repository uses hardware-specific branches to keep the maintained samples, historical demos, and release documents clearly separated. Select the branch or repository that matches your target board before running samples.
+
+| Target Hardware | Recommended Branch / Repository | Description |
+| :--- | :--- | :--- |
+| RDK X5 (Bayes-e) | `rdk_x5` | Standard delivery branch for RDK X5. Recommended system version: RDK OS >= 3.5.0, based on Ubuntu 22.04 aarch64 and TROS-Humble. |
+| RDK X5 historical demos | `main` | Historical archived demos for RDK X5 are kept in the `main` branch for reference and compatibility lookup. |
+| RDK X3 | `rdk_x3` | Switch to the `rdk_x3` branch when using RDK X3 devices. |
+| RDK S series | `rdk_s` | Switch to the `rdk_s` branch when using RDK S series boards. Historical archived demos for RDK S series boards are kept in [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s). |
 
 ---
 
 ## Directory Structure
-
-This repository keeps **fully standardized delivery samples** under `samples/` and preserves **legacy or in-progress examples** under `demos/`.
 
 <details>
 <summary><b>Click to expand project directory architecture</b></summary>
@@ -58,36 +60,41 @@ This repository keeps **fully standardized delivery samples** under `samples/` a
 
 ```bash
 rdk_model_zoo/
-|-- samples/               # Standardized delivery samples
-|   `-- vision/
-|       |-- convnext/
-|       |-- fcos/
-|       |-- lprnet/
-|       |-- mobilenetv1/
-|       |-- mobilenetv2/
-|       |-- mobilenetv3/
-|       |-- mobilenetv4/
-|       |-- googlenet/
-|       |-- edgenext/
-|       |-- efficientformer/
-|       |-- efficientformerv2/
-|       |-- efficientnet/
-|       |-- fasternet/
-|       |-- fastvit/
-|       |-- paddleocr/
-|       |-- repvit/
-|       |-- resnet/
-|       |-- resnext/
-|       |-- ultralytics_yolo/
-|       |-- ultralytics_yolo26/
-|       `-- yolov5/
-|-- demos/                 # Legacy or in-progress examples not yet normalized
-|   |-- classification/    # Classification model collection
-|   |-- detect/            # Other detection demos not yet standardized
-|   |-- Seg/               # Segmentation demos pending standardization
-|   |-- Vision/            # Vision-specific demos such as MODNet
-|   |-- llm/               # LLM / multi-modal demos
-|   `-- solutions/         # End-to-end solution demos
+|-- samples/
+|   |-- vision/
+|   |   |-- clip/
+|   |   |-- convnext/
+|   |   |-- edgenext/
+|   |   |-- efficientformer/
+|   |   |-- efficientformerv2/
+|   |   |-- efficientnet/
+|   |   |-- efficientvit/
+|   |   |-- fasternet/
+|   |   |-- fastvit/
+|   |   |-- fcos/
+|   |   |-- googlenet/
+|   |   |-- lprnet/
+|   |   |-- mobilenetv1/
+|   |   |-- mobilenetv2/
+|   |   |-- mobilenetv3/
+|   |   |-- mobilenetv4/
+|   |   |-- mobileone/
+|   |   |-- modnet/
+|   |   |-- paddleocr/
+|   |   |-- repghost/
+|   |   |-- repvgg/
+|   |   |-- repvit/
+|   |   |-- resnet/
+|   |   |-- resnext/
+|   |   |-- ultralytics_yolo/
+|   |   |-- ultralytics_yolo26/
+|   |   |-- vargconvnet/
+|   |   |-- yoloe/
+|   |   |-- yolov5/
+|   |   `-- yoloworld/
+|   `-- solutions/
+|       |-- llm/
+|       `-- video/
 |-- docs/                  # Project guidelines and reference documentation
 |-- datasets/              # Sample datasets and download scripts
 |-- utils/                 # Shared C++ / Python utilities
@@ -99,33 +106,15 @@ rdk_model_zoo/
 
 ## Quick Start
 
-Use `samples/` for standardized delivery examples. Use `demos/` only when the target model has not yet been migrated to the standard sample layout.
+1. **Check system version**: Ensure the target board is running `RDK OS >= 3.5.0`.
+2. **Connect hardware**: Ensure your RDK board is powered and network-connected. SSH or VSCode Remote SSH is recommended.
+3. **Read the model README first**: Always open the target directory `README.md` before running commands.
+4. **Run the sample**:
 
-1. **Choose the right path**:
-   - Standardized samples: `samples/vision/...`
-   - Legacy / in-progress demos: `demos/...`
-2. **Check system version**: Ensure the target board is running `RDK OS >= 3.5.0`.
-3. **Connect hardware**: Ensure your RDK board is powered and network-connected. SSH or VSCode Remote SSH is recommended.
-4. **Read the model README first**: Always open the target directory `README.md` before running commands.
-
-> **Example A: standardized sample (`samples/`)**
-> ```bash
-> # Enter the standardized sample directory
-> cd samples/vision/yolov5/runtime/python
->
-> # Run inference (the script will download the default model automatically)
-> bash run.sh
-> ```
-
-> **Example B: legacy / in-progress demo (`demos/`)**
-> ```bash
-> # Enter a legacy demo directory
-> cd demos/detect
->
-> # Select a legacy demo and follow its README
->
-> # Read the demo README and follow its run instructions
-> ```
+```bash
+cd samples/vision/yolov5/runtime/python
+bash run.sh
+```
 
 **Inference Result:**
 <div align="center">
@@ -136,45 +125,46 @@ Use `samples/` for standardized delivery examples. Use `demos/` only when the ta
 
 ## Model Zoo Matrix
 
-### Standardized Samples
-
-These directories have been migrated to the standard sample layout and are the recommended entry points.
+### Vision Samples
 
 | Category | Models | Path |
 | :--- | :--- | :---: |
 | **Classification** | ConvNeXt | [Code](./samples/vision/convnext) |
-| **Classification** | MobileNetV1 | [Code](./samples/vision/mobilenetv1) |
-| **Classification** | MobileNetV2 | [Code](./samples/vision/mobilenetv2) |
-| **Classification** | MobileNetV3 | [Code](./samples/vision/mobilenetv3) |
-| **Classification** | MobileNetV4 | [Code](./samples/vision/mobilenetv4) |
-| **Classification** | GoogLeNet | [Code](./samples/vision/googlenet) |
 | **Classification** | EdgeNeXt | [Code](./samples/vision/edgenext) |
 | **Classification** | EfficientFormer | [Code](./samples/vision/efficientformer) |
 | **Classification** | EfficientFormerV2 | [Code](./samples/vision/efficientformerv2) |
 | **Classification** | EfficientNet | [Code](./samples/vision/efficientnet) |
+| **Classification** | EfficientViT | [Code](./samples/vision/efficientvit) |
 | **Classification** | FasterNet | [Code](./samples/vision/fasternet) |
 | **Classification** | FastViT | [Code](./samples/vision/fastvit) |
+| **Classification** | GoogLeNet | [Code](./samples/vision/googlenet) |
+| **Classification** | MobileNetV1 | [Code](./samples/vision/mobilenetv1) |
+| **Classification** | MobileNetV2 | [Code](./samples/vision/mobilenetv2) |
+| **Classification** | MobileNetV3 | [Code](./samples/vision/mobilenetv3) |
+| **Classification** | MobileNetV4 | [Code](./samples/vision/mobilenetv4) |
+| **Classification** | MobileOne | [Code](./samples/vision/mobileone) |
+| **Classification** | RepGhost | [Code](./samples/vision/repghost) |
+| **Classification** | RepVGG | [Code](./samples/vision/repvgg) |
 | **Classification** | RepViT | [Code](./samples/vision/repvit) |
 | **Classification** | ResNet | [Code](./samples/vision/resnet) |
 | **Classification** | ResNeXt | [Code](./samples/vision/resnext) |
+| **Classification** | VargConvNet | [Code](./samples/vision/vargconvnet) |
 | **Object Detection** | FCOS | [Code](./samples/vision/fcos) |
-| **Recognition** | LPRNet | [Code](./samples/vision/lprnet) |
 | **Object Detection** | YOLOv5 | [Code](./samples/vision/yolov5) |
 | **Ultralytics YOLO** | YOLOv5u, YOLOv8, YOLOv9, YOLOv10, YOLO11, YOLO12, YOLO13, YOLO26 | [Code](./samples/vision/ultralytics_yolo), [YOLO26](./samples/vision/ultralytics_yolo26) |
+| **Instance Segmentation** | YOLOE | [Code](./samples/vision/yoloe) |
+| **Matting** | MODNet | [Code](./samples/vision/modnet) |
 | **OCR** | PaddleOCR | [Code](./samples/vision/paddleocr) |
+| **Recognition** | LPRNet | [Code](./samples/vision/lprnet) |
+| **Multimodal** | CLIP | [Code](./samples/vision/clip) |
+| **Multimodal** | YOLOWorld | [Code](./samples/vision/yoloworld) |
 
-### Legacy / In-Progress Demos
+### Solution Samples
 
-These directories have been moved back to `demos/` because they have not yet been fully refactored to the standard sample layout.
-
-| Category | Representative Models | Path |
+| Category | Samples | Path |
 | :--- | :--- | :---: |
-| **Classification** | Other legacy classification models | [Code](./demos/classification) |
-| **Object Detection** | Other legacy detection demos | [Code](./demos/detect) |
-| **Segmentation** | YOLOE-11-Seg-Prompt-Free | [Code](./demos/Seg) |
-| **Vision Specifics** | MODNet | [Code](./demos/Vision) |
-| **Large Models** | CLIP, YOLO-World | [Code](./demos/llm) |
-| **Solutions** | RDK LLM Solutions, RDK Video Solutions | [Code](./demos/solutions) |
+| **LLM Solution** | RDK LLM Solution | [Code](./samples/solutions/llm) |
+| **Video Solution** | RDK Video Solution | [Code](./samples/solutions/video) |
 
 ---
 
@@ -248,6 +238,7 @@ Yes. Non-quantizable or BPU-unsupported operators **fallback** to CPU. Even for 
 ## Community & Contribution
 
 ### Star History
+
 [![Star History Chart](https://api.star-history.com/svg?repos=D-Robotics/rdk_model_zoo&type=Date)](https://star-history.com/#D-Robotics/rdk_model_zoo&Date)
 
 We warmly welcome contributions! Please raise an issue on [GitHub Issues](https://github.com/D-Robotics/rdk_model_zoo/issues) or discuss on the [Developer Community](https://developer.d-robotics.cc/).

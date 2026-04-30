@@ -216,6 +216,46 @@ class YOLO26Seg:
             self.input_h = input_shape[1]
             self.input_w = input_shape[2]
 
+        # Reorder output_names into standard (cls, box, mc) × strides + proto layout.
+        # Group by spatial resolution (H,W), sort groups by H ascending (stride 8→32),
+        # and within each group sort by last_dim: cls(80) > mc(32) > box(4).
+        # Proto is identified as the group whose H exceeds the largest detection head H.
+        output_shapes = self.model.output_shapes[self.model_name]
+        groups = {}
+        proto_name = None
+        for name in self.output_names:
+            shape = output_shapes[name]
+            h, w, last = shape[1], shape[2], shape[3]
+            groups.setdefault((h, w), []).append((name, last))
+
+        sorted_hw = sorted(groups.keys(), key=lambda x: x[0])
+        max_det_h = sorted_hw[-1][0] if len(sorted_hw) > 1 else 0
+
+        reordered = []
+        for hw in sorted_hw:
+            members = groups[hw]
+            if len(members) == 1 and hw[0] > max_det_h:
+                proto_name = members[0][0]
+            else:
+                # Sort into (cls, box, mc) order by last_dim:
+                # cls has the largest last_dim (classes_num=80),
+                # box is always 4, mc is the remaining middle value (32).
+                def _seg_sort_key(item):
+                    last = item[1]
+                    if last == self.cfg.classes_num:
+                        return 0  # cls first
+                    elif last == 4:
+                        return 1  # box second
+                    else:
+                        return 2  # mc last
+                members.sort(key=_seg_sort_key)
+                for name, _ in members:
+                    reordered.append(name)
+
+        if proto_name is not None:
+            reordered.append(proto_name)
+        self.output_names = reordered
+
     def set_scheduling_params(self,
                               priority: Optional[int] = None,
                               bpu_cores: Optional[list] = None) -> None:
@@ -268,7 +308,7 @@ class YOLO26Seg:
             }
         }
 
-    def forward(self, input_tensor: Dict[str, Dict[str, np.ndarray]]) -> Dict[str, np.ndarray]:
+    def forward(self, input_tensor: Dict[str, Dict[str, np.ndarray]]) -> Dict[str, Dict[str, np.ndarray]]:
         """
         Execute inference on BPU using hbm_runtime.
 
@@ -308,8 +348,10 @@ class YOLO26Seg:
                 - masks: Binary segmentation masks.
         """
         t0 = time.time()
-        score_thres = score_thres or self.cfg.score_thres
-        nms_thres = nms_thres or self.cfg.nms_thres
+        if score_thres is None:
+            score_thres = self.cfg.score_thres
+        if nms_thres is None:
+            nms_thres = self.cfg.nms_thres
         raw_outputs = outputs[self.model_name]
         decoded = []
 
@@ -318,8 +360,8 @@ class YOLO26Seg:
             cls_feat = raw_outputs[self.output_names[base_idx]]
             box_feat = raw_outputs[self.output_names[base_idx + 1]]
             mc_feat = raw_outputs[self.output_names[base_idx + 2]]
-            
-            layer_pred = decode_seg_layer(box_feat, cls_feat, mc_feat, 
+
+            layer_pred = decode_seg_layer(box_feat, cls_feat, mc_feat,
                                           stride, score_thres, self.cfg.classes_num)
             decoded.append(layer_pred)
 

@@ -26,7 +26,7 @@
 | `--label-file` | COCO 类别名文件路径 | `../../../../../datasets/coco/coco_classes.names` |
 | `--priority` | Runtime 调度优先级 | `0` |
 | `--bpu-cores` | BPU 核心编号 | `0` |
-| `--test-img` | 测试图片路径 | `../../test_data/bus.jpg` |
+| `--test-img` | 测试图片路径 | `../../../../../datasets/coco/assets/bus.jpg` |
 | `--img-save-path` | 结果图保存路径 | `../../test_data/result.jpg` |
 | `--resize-type` | 缩放策略：0 为直接缩放，1 为 letterbox | `0` |
 | `--classes-num` | 检测类别数 | `80` |
@@ -52,7 +52,7 @@ chmod +x run.sh
   ```bash
   python3 main.py \
     --model-path ../../model/fcos_efficientnetb0_detect_512x512_bayese_nv12.bin \
-    --test-img ../../test_data/bus.jpg \
+    --test-img ../../../../../datasets/coco/assets/bus.jpg \
     --img-save-path ../../test_data/result.jpg
   ```
 

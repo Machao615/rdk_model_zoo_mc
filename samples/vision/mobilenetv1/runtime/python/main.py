@@ -46,11 +46,13 @@ logging.basicConfig(
 logger = logging.getLogger("MobileNetV1")
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "../../../../../"))
+MODEL_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../model"))
 TEST_DATA_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../../test_data"))
-DEFAULT_MODEL_PATH = "/opt/hobot/model/x5/basic/mobilenetv1_224x224_nv12.bin"
+DEFAULT_MODEL_PATH = os.path.join(MODEL_DIR, "mobilenetv1_224x224_nv12.bin")
 DEFAULT_TEST_IMAGE = os.path.join(TEST_DATA_DIR, "bulbul.JPEG")
 DEFAULT_RESULT_IMAGE = os.path.join(TEST_DATA_DIR, "result.jpg")
-DEFAULT_LABEL_FILE = os.path.join(TEST_DATA_DIR, "ImageNet_1k.json")
+DEFAULT_LABEL_FILE = os.path.join(PROJECT_ROOT, "datasets/imagenet/imagenet_classes.names")
 
 
 def save_image(path: str, image) -> None:

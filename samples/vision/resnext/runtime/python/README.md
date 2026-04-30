@@ -18,7 +18,7 @@ This sample demonstrates how to use the quantized ResNeXt model on BPU for Image
 | Argument | Description | Default |
 | --- | --- | --- |
 | `--model-path` | Path to the quantized `.bin` model file. | `../../model/ResNeXt50_32x4d_224x224_nv12.bin` |
-| `--label-file` | Path to the ImageNet label file. | `../../test_data/ImageNet_1k.json` |
+| `--label-file` | Path to the ImageNet label file. | `../../../../../datasets/imagenet/imagenet_classes.names` |
 | `--priority` | Model priority in the range `0~255`. | `0` |
 | `--bpu-cores` | BPU core indexes used for inference. | `[0]` |
 | `--test-img` | Path to the test input image. | `../../test_data/bee_eater.JPEG` |

@@ -1,9 +1,15 @@
 #!/bin/bash
 set -e
-python3 -c "import numpy, cv2, scipy" || pip3 install numpy opencv-python scipy
 
-MODEL_PATH="/opt/hobot/model/x5/basic/ConvNeXt_atto_224x224_nv12.bin"
-[ ! -f "$MODEL_PATH" ] && MODEL_PATH="../../model/ConvNeXt_atto_224x224_nv12.bin"
-[ ! -f "$MODEL_PATH" ] && bash ../../model/download.sh && MODEL_PATH="../../model/ConvNeXt_atto_224x224_nv12.bin"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MODEL_DIR="${SCRIPT_DIR}/../../model"
 
-python3 main.py --model-path "$MODEL_PATH"
+MODEL_PATH="${MODEL_DIR}/ConvNeXt_atto_224x224_nv12.bin"
+
+# Download model if missing
+if [ ! -f "${MODEL_PATH}" ]; then
+    bash "${MODEL_DIR}/download.sh"
+fi
+
+cd "${SCRIPT_DIR}"
+python3 main.py "$@"

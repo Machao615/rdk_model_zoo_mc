@@ -20,7 +20,7 @@
 | 参数 | 说明 | 默认值 |
 | --- | --- | --- |
 | `--model-path` | 量化 `.bin` 模型文件路径。 | `../../model/MobileNetV3_224x224_nv12.bin` |
-| `--label-file` | ImageNet 标签文件路径。 | `../../test_data/ImageNet_1k.json` |
+| `--label-file` | ImageNet 标签文件路径。 | `../../../../../datasets/imagenet/imagenet_classes.names` |
 | `--priority` | 模型优先级，范围 `0~255`。 | `0` |
 | `--bpu-cores` | 用于推理的 BPU 核索引。 | `0` |
 | `--test-img` | 测试输入图像路径。 | `../../test_data/kit_fox.JPEG` |

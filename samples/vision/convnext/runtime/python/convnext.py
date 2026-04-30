@@ -1,4 +1,4 @@
-# Copyright (c) 2025 D-Robotics Corporation
+# Copyright (c) 2026 D-Robotics Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,16 +34,14 @@ import os
 import cv2
 import sys
 import time
-import ast
 import hbm_runtime
 import numpy as np
 from scipy.special import softmax
 from dataclasses import dataclass
 from typing import Optional, Dict, Tuple, List, Any
 
-# Add project root to sys.path to import shared utilities.
-# Path: rdk_model_zoo_x5/samples/vision/ConvNeXt/runtime/python -> rdk_model_zoo_x5
 sys.path.append(os.path.abspath("../../../../../"))
+import utils.py_utils.file_io as file_io
 import utils.py_utils.preprocess as pre_utils
 
 
@@ -54,12 +52,12 @@ class ConvNeXtConfig:
     
     Args:
         model_path (str): Path to the compiled HBM model file.
-        classes_path (Optional[str]): Path to the ImageNet class names file.
+        label_file (Optional[str]): Path to the ImageNet class names file.
         resize_type (int): Resize strategy (0: direct, 1: letterbox).
         topk (int): Number of top results to return.
     """
     model_path: str
-    classes_path: Optional[str] = None
+    label_file: Optional[str] = None
     resize_type: int = 1
     topk: int = 5
 
@@ -90,25 +88,7 @@ class ConvNeXt:
         self.input_w = self.input_shapes[self.input_names[0]][3]
         
         # Load labels if provided
-        self.labels = self._load_labels(config.classes_path) if config.classes_path else None
-
-    def _load_labels(self, path: str) -> Optional[Dict[int, str]]:
-        """
-        Load ImageNet labels from a file (supports dict-like string format).
-
-        Args:
-            path (str): Path to the label file.
-
-        Returns:
-            Optional[Dict[int, str]]: Dictionary mapping class ID to label string.
-        """
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                content = f.read()
-                return ast.literal_eval(content)
-        except Exception as e:
-            print(f"[Warning] Failed to load labels from {path}: {e}")
-            return None
+        self.labels = file_io.load_imagenet_labels(config.label_file) if config.label_file else {}
 
     def set_scheduling_params(self, 
                               priority: Optional[int] = None, 
@@ -198,8 +178,7 @@ class ConvNeXt:
         topk_prob = prob[topk_idx]
         
         topk_labels = []
-        if self.labels:
-            topk_labels = [self.labels.get(idx, "Unknown") for idx in topk_idx]
+        if self.labels:topk_labels = [self.labels.get(int(idx), str(int(idx))) for idx in topk_idx]
             
         return topk_idx, topk_prob, topk_labels
 

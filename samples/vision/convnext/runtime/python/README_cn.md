@@ -2,14 +2,6 @@
 
 本示例展示如何在 BPU 上使用量化后的 ConvNeXt 模型执行图像分类任务。
 
-## 环境依赖
-
-本样例无特殊环境依赖，确保安装了 pydev 中的环境依赖即可。
-
-```bash
-pip install numpy opencv-python hbm-runtime scipy
-```
-
 ## 目录结构
 
 ```text
@@ -27,7 +19,7 @@ pip install numpy opencv-python hbm-runtime scipy
 |----------------|----------------------------------------------------------|---------------------------------------------|
 | `--model-path` | 模型文件路径（.bin 格式）                                  | `../../model/ConvNeXt_atto_224x224_nv12.bin` |
 | `--test-img`   | 测试图片路径                                              | `../../test_data/cheetah.JPEG`              |
-| `--label-file` | ImageNet 标签文件路径                                      | `../../../../datasets/imagenet/imagenet_classes.names` |
+| `--label-file` | ImageNet 标签文件路径                                      | `../../../../../datasets/imagenet/imagenet_classes.names` |
 | `--topk`       | 显示 Top-K 结果                                           | `5`                                         |
 | `--resize-type`| 缩放策略：0 为直接缩放，1 为等比例缩放并填充                 | `1`                                         |
 
