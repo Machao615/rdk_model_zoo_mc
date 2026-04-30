@@ -11,7 +11,7 @@
 
 <div align="center">
 
-**English** | [Simplified Chinese](./README_cn.md)
+**English** | [简体中文](./README_cn.md)
 
 <p align="center">
   <a href="https://github.com/D-Robotics/rdk_model_zoo/stargazers"><img src="https://img.shields.io/github/stars/D-Robotics/rdk_model_zoo?style=flat-square&logo=github&color=blue" alt="Stars"></a>
@@ -36,18 +36,18 @@ The repository includes BPU-ready models across multiple AI domains and provides
 - 🚀 **Quick BPU Adoption**: Provides out-of-the-box inference pipelines to help users complete BPU inference validation and performance evaluation in the shortest time.
 - 🧩 **Complete End-to-End Examples**: Covers the entire process from algorithm export and fixed-point quantization to efficient on-board execution (`.bin` / `.hbm`). Includes model loading, preprocessing, BPU inference execution, post-processing, and result visualization.
 - 📐 **Standardized Design & Documentation**: Provides unified directory structures and sample code specifications, supporting Python (`hbm_runtime`) and C/C++ interfaces for easy understanding, secondary development, and reduced integration/maintenance costs.
-- 🌐 **Full Scenario Coverage**: Covers classification, detection, segmentation, pose estimation, OCR, multi-modal models, and end-to-end solutions.
+- 🌐 **Full Scenario Coverage**: Covers classification, detection, segmentation, pose estimation, OCR, and multi-modal models.
 
 ### Hardware & System Support
 
-This repository uses hardware-specific branches to keep the maintained samples, historical demos, and release documents clearly separated. Select the branch or repository that matches your target board before running samples.
+This repository uses hardware-specific branches to keep maintained samples, legacy demos, and board-specific documents clearly separated. The current `rdk_x5` branch is the primary delivery branch for RDK X5. The previous `main` branch has been renamed to `rdk_x5_legacy` and is kept only as the historical archive branch.
 
-| Target Hardware | Recommended Branch / Repository | Description |
+| Target Hardware | Branch | Description |
 | :--- | :--- | :--- |
-| RDK X5 (Bayes-e) | `rdk_x5` | Standard delivery branch for RDK X5. Recommended system version: RDK OS >= 3.5.0, based on Ubuntu 22.04 aarch64 and TROS-Humble. |
-| RDK X5 historical demos | `main` | Historical archived demos for RDK X5 are kept in the `main` branch for reference and compatibility lookup. |
-| RDK X3 | `rdk_x3` | Switch to the `rdk_x3` branch when using RDK X3 devices. |
-| RDK S series | `rdk_s` | Switch to the `rdk_s` branch when using RDK S series boards. Historical archived demos for RDK S series boards are kept in [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s). |
+| RDK X5 | [`rdk_x5`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5) | Primary delivery branch for RDK X5. Recommended system version: RDK OS >= 3.5.0, based on Ubuntu 22.04 aarch64 and TROS-Humble. |
+| RDK X5 legacy demos | [`rdk_x5_legacy`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5_legacy) | Historical archive branch for the previous RDK X5 demos. Use it only when you need to reference legacy demo content. |
+| RDK X3 | [`rdk_x3`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x3) | Branch for RDK X3 devices. |
+| RDK S series | [`rdk_s`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_s) | Branch for RDK S series boards. Historical archived demos for RDK S series boards are kept in [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s). |
 
 ---
 
@@ -62,39 +62,36 @@ This repository uses hardware-specific branches to keep the maintained samples, 
 rdk_model_zoo/
 |-- samples/
 |   |-- vision/
-|   |   |-- clip/
-|   |   |-- convnext/
-|   |   |-- edgenext/
-|   |   |-- efficientformer/
-|   |   |-- efficientformerv2/
-|   |   |-- efficientnet/
-|   |   |-- efficientvit/
-|   |   |-- fasternet/
-|   |   |-- fastvit/
-|   |   |-- fcos/
-|   |   |-- googlenet/
-|   |   |-- lprnet/
-|   |   |-- mobilenetv1/
-|   |   |-- mobilenetv2/
-|   |   |-- mobilenetv3/
-|   |   |-- mobilenetv4/
-|   |   |-- mobileone/
-|   |   |-- modnet/
-|   |   |-- paddleocr/
-|   |   |-- repghost/
-|   |   |-- repvgg/
-|   |   |-- repvit/
-|   |   |-- resnet/
-|   |   |-- resnext/
-|   |   |-- ultralytics_yolo/
-|   |   |-- ultralytics_yolo26/
-|   |   |-- vargconvnet/
-|   |   |-- yoloe/
-|   |   |-- yolov5/
-|   |   `-- yoloworld/
-|   `-- solutions/
-|       |-- llm/
-|       `-- video/
+|   |   |-- clip/                 # Image-text multimodal matching
+|   |   |-- convnext/             # Image classification
+|   |   |-- edgenext/             # Image classification
+|   |   |-- efficientformer/      # Image classification
+|   |   |-- efficientformerv2/    # Image classification
+|   |   |-- efficientnet/         # Image classification
+|   |   |-- efficientvit/         # Image classification
+|   |   |-- fasternet/            # Image classification
+|   |   |-- fastvit/              # Image classification
+|   |   |-- fcos/                 # Object detection
+|   |   |-- googlenet/            # Image classification
+|   |   |-- lprnet/               # License plate recognition
+|   |   |-- mobilenetv1/          # Image classification
+|   |   |-- mobilenetv2/          # Image classification
+|   |   |-- mobilenetv3/          # Image classification
+|   |   |-- mobilenetv4/          # Image classification
+|   |   |-- mobileone/            # Image classification
+|   |   |-- modnet/               # Image matting
+|   |   |-- paddleocr/            # OCR text detection and recognition
+|   |   |-- repghost/             # Image classification
+|   |   |-- repvgg/               # Image classification
+|   |   |-- repvit/               # Image classification
+|   |   |-- resnet/               # Image classification
+|   |   |-- resnext/              # Image classification
+|   |   |-- ultralytics_yolo/     # Detection, segmentation, pose, classification
+|   |   |-- ultralytics_yolo26/   # Detection, segmentation, pose, classification
+|   |   |-- vargconvnet/          # Image classification
+|   |   |-- yoloe/                # Instance segmentation
+|   |   |-- yolov5/               # Object detection
+|   |   `-- yoloworld/           # Open-vocabulary object detection
 |-- docs/                  # Project guidelines and reference documentation
 |-- datasets/              # Sample datasets and download scripts
 |-- tros/                  # TROS integration guides and examples
@@ -130,50 +127,40 @@ python3 main.py \
 
 ---
 
-## Model Zoo Matrix
+## Model List
 
-### Vision Samples
-
-| Category | Models | Path |
-| :--- | :--- | :---: |
-| **Classification** | ConvNeXt | [Code](./samples/vision/convnext) |
-| **Classification** | EdgeNeXt | [Code](./samples/vision/edgenext) |
-| **Classification** | EfficientFormer | [Code](./samples/vision/efficientformer) |
-| **Classification** | EfficientFormerV2 | [Code](./samples/vision/efficientformerv2) |
-| **Classification** | EfficientNet | [Code](./samples/vision/efficientnet) |
-| **Classification** | EfficientViT | [Code](./samples/vision/efficientvit) |
-| **Classification** | FasterNet | [Code](./samples/vision/fasternet) |
-| **Classification** | FastViT | [Code](./samples/vision/fastvit) |
-| **Classification** | GoogLeNet | [Code](./samples/vision/googlenet) |
-| **Classification** | MobileNetV1 | [Code](./samples/vision/mobilenetv1) |
-| **Classification** | MobileNetV2 | [Code](./samples/vision/mobilenetv2) |
-| **Classification** | MobileNetV3 | [Code](./samples/vision/mobilenetv3) |
-| **Classification** | MobileNetV4 | [Code](./samples/vision/mobilenetv4) |
-| **Classification** | MobileOne | [Code](./samples/vision/mobileone) |
-| **Classification** | RepGhost | [Code](./samples/vision/repghost) |
-| **Classification** | RepVGG | [Code](./samples/vision/repvgg) |
-| **Classification** | RepViT | [Code](./samples/vision/repvit) |
-| **Classification** | ResNet | [Code](./samples/vision/resnet) |
-| **Classification** | ResNeXt | [Code](./samples/vision/resnext) |
-| **Classification** | VargConvNet | [Code](./samples/vision/vargconvnet) |
-| **Object Detection** | FCOS | [Code](./samples/vision/fcos) |
-| **Object Detection** | YOLOv5 | [Code](./samples/vision/yolov5) |
-| **Ultralytics YOLO** | YOLOv5u, YOLOv8, YOLOv9, YOLOv10, YOLO11, YOLO12, YOLO13, YOLO26 | [Code](./samples/vision/ultralytics_yolo), [YOLO26](./samples/vision/ultralytics_yolo26) |
-| **Instance Segmentation** | YOLOE | [Code](./samples/vision/yoloe) |
-| **Matting** | MODNet | [Code](./samples/vision/modnet) |
-| **OCR** | PaddleOCR | [Code](./samples/vision/paddleocr) |
-| **Recognition** | LPRNet | [Code](./samples/vision/lprnet) |
-| **Multimodal** | CLIP | [Code](./samples/vision/clip) |
-| **Multimodal** | YOLOWorld | [Code](./samples/vision/yoloworld) |
-
-### Solution Samples
-
-| Category | Samples | Path |
-| :--- | :--- | :---: |
-| **LLM Solution** | RDK LLM Solution | [Code](./samples/solutions/llm) |
-| **Video Solution** | RDK Video Solution | [Code](./samples/solutions/video) |
-
----
+| Category | Model Name | Model Path | Supported Platform | Details |
+| :--- | :--- | :--- | :--- | :---: |
+| Image Classification | ConvNeXt | `samples/vision/convnext` | RDK X5 | [Details](./samples/vision/convnext) |
+| Image Classification | EdgeNeXt | `samples/vision/edgenext` | RDK X5 | [Details](./samples/vision/edgenext) |
+| Image Classification | EfficientFormer | `samples/vision/efficientformer` | RDK X5 | [Details](./samples/vision/efficientformer) |
+| Image Classification | EfficientFormerV2 | `samples/vision/efficientformerv2` | RDK X5 | [Details](./samples/vision/efficientformerv2) |
+| Image Classification | EfficientNet | `samples/vision/efficientnet` | RDK X5 | [Details](./samples/vision/efficientnet) |
+| Image Classification | EfficientViT | `samples/vision/efficientvit` | RDK X5 | [Details](./samples/vision/efficientvit) |
+| Image Classification | FasterNet | `samples/vision/fasternet` | RDK X5 | [Details](./samples/vision/fasternet) |
+| Image Classification | FastViT | `samples/vision/fastvit` | RDK X5 | [Details](./samples/vision/fastvit) |
+| Image Classification | GoogLeNet | `samples/vision/googlenet` | RDK X5 | [Details](./samples/vision/googlenet) |
+| Image Classification | MobileNetV1 | `samples/vision/mobilenetv1` | RDK X5 | [Details](./samples/vision/mobilenetv1) |
+| Image Classification | MobileNetV2 | `samples/vision/mobilenetv2` | RDK X5 | [Details](./samples/vision/mobilenetv2) |
+| Image Classification | MobileNetV3 | `samples/vision/mobilenetv3` | RDK X5 | [Details](./samples/vision/mobilenetv3) |
+| Image Classification | MobileNetV4 | `samples/vision/mobilenetv4` | RDK X5 | [Details](./samples/vision/mobilenetv4) |
+| Image Classification | MobileOne | `samples/vision/mobileone` | RDK X5 | [Details](./samples/vision/mobileone) |
+| Image Classification | RepGhost | `samples/vision/repghost` | RDK X5 | [Details](./samples/vision/repghost) |
+| Image Classification | RepVGG | `samples/vision/repvgg` | RDK X5 | [Details](./samples/vision/repvgg) |
+| Image Classification | RepViT | `samples/vision/repvit` | RDK X5 | [Details](./samples/vision/repvit) |
+| Image Classification | ResNet | `samples/vision/resnet` | RDK X5 | [Details](./samples/vision/resnet) |
+| Image Classification | ResNeXt | `samples/vision/resnext` | RDK X5 | [Details](./samples/vision/resnext) |
+| Image Classification | VargConvNet | `samples/vision/vargconvnet` | RDK X5 | [Details](./samples/vision/vargconvnet) |
+| Object Detection | FCOS | `samples/vision/fcos` | RDK X5 | [Details](./samples/vision/fcos) |
+| Object Detection | YOLOv5 | `samples/vision/yolov5` | RDK X5 | [Details](./samples/vision/yolov5) |
+| Object Detection / Instance Segmentation / Pose Estimation / Image Classification | Ultralytics YOLO (`YOLOv5u / YOLOv8 / YOLOv9 / YOLOv10 / YOLO11 / YOLO12 / YOLO13`) | `samples/vision/ultralytics_yolo` | RDK X5 | [Details](./samples/vision/ultralytics_yolo) |
+| Object Detection / Instance Segmentation / Pose Estimation / Image Classification | Ultralytics YOLO26 | `samples/vision/ultralytics_yolo26` | RDK X5 | [Details](./samples/vision/ultralytics_yolo26) |
+| Instance Segmentation | YOLOE | `samples/vision/yoloe` | RDK X5 | [Details](./samples/vision/yoloe) |
+| Image Matting | MODNet | `samples/vision/modnet` | RDK X5 | [Details](./samples/vision/modnet) |
+| OCR Text Detection and Recognition | PaddleOCR | `samples/vision/paddleocr` | RDK X5 | [Details](./samples/vision/paddleocr) |
+| License Plate Recognition | LPRNet | `samples/vision/lprnet` | RDK X5 | [Details](./samples/vision/lprnet) |
+| Image-Text Multimodal Matching | CLIP | `samples/vision/clip` | RDK X5 | [Details](./samples/vision/clip) |
+| Open-Vocabulary Object Detection | YOLOWorld | `samples/vision/yoloworld` | RDK X5 | [Details](./samples/vision/yoloworld) |
 
 ## Documentation & Resources
 

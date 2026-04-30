@@ -36,18 +36,18 @@
 - 🚀 **快速把 BPU 用起来**：提供开箱即用的推理 Pipeline，帮助用户在最短时间内完成 BPU 推理验证及性能评估。
 - 🧩 **完整端到端示例**：覆盖从算法导出、定点量化转换到板端高效运行（`.bin` / `.hbm`）的全过程。包含模型加载、前处理、BPU 推理执行、后处理与结果可视化。
 - 📐 **规范化设计与接口文档**：提供统一的目录结构与示例代码规范，支持 Python（`hbm_runtime`）与 C/C++ 接口，便于快速理解和二次开发，降低集成与维护成本。
-- 🌐 **全场景覆盖**：涵盖分类、检测、分割、姿态估计、OCR、多模态模型以及端到端解决方案。
+- 🌐 **全场景覆盖**：涵盖分类、检测、分割、姿态估计、OCR 以及多模态模型。
 
 ### 硬件与系统支持
 
-本仓库通过不同分支区分各类板卡的交付内容、历史归档 demo 和说明文档。使用 sample 前，请先根据目标板卡选择对应分支或仓库。
+本仓库通过不同分支区分各类板卡的交付内容、历史 demo 和说明文档。当前 `rdk_x5` 分支将作为 RDK X5 的主交付分支；原 `main` 分支已变更为 `rdk_x5_legacy`，仅用于历史 demo 归档。
 
-| 目标硬件 | 推荐分支 / 仓库 | 说明 |
+| 目标硬件 | 对应分支 | 说明 |
 | :--- | :--- | :--- |
-| RDK X5 (Bayes-e) | `rdk_x5` | 标准 RDK X5 交付分支。推荐系统版本为 RDK OS >= 3.5.0，系统基于 Ubuntu 22.04 aarch64 和 TROS-Humble。 |
-| RDK X5 历史归档 demo | `main` | RDK X5 的历史归档 demo 保留在 `main` 分支，用于历史兼容和旧 demo 查询。 |
-| RDK X3 | `rdk_x3` | RDK X3 设备请切换到 `rdk_x3` 分支。 |
-| RDK S 系列 | `rdk_s` | RDK S 系列板卡请切换到 `rdk_s` 分支。RDK S 系列板卡的历史归档 demo 保留在 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s) 仓库。 |
+| RDK X5 | [`rdk_x5`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5) | RDK X5 主交付分支。推荐系统版本为 RDK OS >= 3.5.0，系统基于 Ubuntu 22.04 aarch64 和 TROS-Humble。 |
+| RDK X5 历史 demo | [`rdk_x5_legacy`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x5_legacy) | 原 RDK X5 历史 demo 归档分支，仅用于历史兼容和旧 demo 查询。 |
+| RDK X3 | [`rdk_x3`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_x3) | RDK X3 设备请切换到该分支。 |
+| RDK S 系列 | [`rdk_s`](https://github.com/D-Robotics/rdk_model_zoo/tree/rdk_s) | RDK S 系列板卡请切换到该分支。RDK S 系列板卡的历史 demo 保留在 [RDK Model Zoo S](https://github.com/d-Robotics/rdk_model_zoo_s) 仓库。 |
 
 ---
 
@@ -62,39 +62,36 @@
 rdk_model_zoo/
 |-- samples/
 |   |-- vision/
-|   |   |-- clip/
-|   |   |-- convnext/
-|   |   |-- edgenext/
-|   |   |-- efficientformer/
-|   |   |-- efficientformerv2/
-|   |   |-- efficientnet/
-|   |   |-- efficientvit/
-|   |   |-- fasternet/
-|   |   |-- fastvit/
-|   |   |-- fcos/
-|   |   |-- googlenet/
-|   |   |-- lprnet/
-|   |   |-- mobilenetv1/
-|   |   |-- mobilenetv2/
-|   |   |-- mobilenetv3/
-|   |   |-- mobilenetv4/
-|   |   |-- mobileone/
-|   |   |-- modnet/
-|   |   |-- paddleocr/
-|   |   |-- repghost/
-|   |   |-- repvgg/
-|   |   |-- repvit/
-|   |   |-- resnet/
-|   |   |-- resnext/
-|   |   |-- ultralytics_yolo/
-|   |   |-- ultralytics_yolo26/
-|   |   |-- vargconvnet/
-|   |   |-- yoloe/
-|   |   |-- yolov5/
-|   |   `-- yoloworld/
-|   `-- solutions/
-|       |-- llm/
-|       `-- video/
+|   |   |-- clip/                 # 图文多模态匹配
+|   |   |-- convnext/             # 图像分类
+|   |   |-- edgenext/             # 图像分类
+|   |   |-- efficientformer/      # 图像分类
+|   |   |-- efficientformerv2/    # 图像分类
+|   |   |-- efficientnet/         # 图像分类
+|   |   |-- efficientvit/         # 图像分类
+|   |   |-- fasternet/            # 图像分类
+|   |   |-- fastvit/              # 图像分类
+|   |   |-- fcos/                 # 目标检测
+|   |   |-- googlenet/            # 图像分类
+|   |   |-- lprnet/               # 车牌识别
+|   |   |-- mobilenetv1/          # 图像分类
+|   |   |-- mobilenetv2/          # 图像分类
+|   |   |-- mobilenetv3/          # 图像分类
+|   |   |-- mobilenetv4/          # 图像分类
+|   |   |-- mobileone/            # 图像分类
+|   |   |-- modnet/               # 图像抠图
+|   |   |-- paddleocr/            # OCR 文字检测与识别
+|   |   |-- repghost/             # 图像分类
+|   |   |-- repvgg/               # 图像分类
+|   |   |-- repvit/               # 图像分类
+|   |   |-- resnet/               # 图像分类
+|   |   |-- resnext/              # 图像分类
+|   |   |-- ultralytics_yolo/     # 检测、分割、姿态、分类
+|   |   |-- ultralytics_yolo26/   # 检测、分割、姿态、分类
+|   |   |-- vargconvnet/          # 图像分类
+|   |   |-- yoloe/                # 实例分割
+|   |   |-- yolov5/               # 目标检测
+|   |   `-- yoloworld/           # 开放词表目标检测
 |-- docs/                  # 项目规范与参考文档
 |-- datasets/              # 数据集与下载脚本
 |-- tros/                  # TROS 集成指南与示例
@@ -133,50 +130,40 @@ python3 main.py \
 
 ---
 
-## 模型支持矩阵 (Model Zoo Matrix)
+## 模型列表
 
-### 视觉 Samples
-
-| 类别 | 模型 | 路径 |
-| :--- | :--- | :---: |
-| **分类** | ConvNeXt | [Code](./samples/vision/convnext) |
-| **分类** | EdgeNeXt | [Code](./samples/vision/edgenext) |
-| **分类** | EfficientFormer | [Code](./samples/vision/efficientformer) |
-| **分类** | EfficientFormerV2 | [Code](./samples/vision/efficientformerv2) |
-| **分类** | EfficientNet | [Code](./samples/vision/efficientnet) |
-| **分类** | EfficientViT | [Code](./samples/vision/efficientvit) |
-| **分类** | FasterNet | [Code](./samples/vision/fasternet) |
-| **分类** | FastViT | [Code](./samples/vision/fastvit) |
-| **分类** | GoogLeNet | [Code](./samples/vision/googlenet) |
-| **分类** | MobileNetV1 | [Code](./samples/vision/mobilenetv1) |
-| **分类** | MobileNetV2 | [Code](./samples/vision/mobilenetv2) |
-| **分类** | MobileNetV3 | [Code](./samples/vision/mobilenetv3) |
-| **分类** | MobileNetV4 | [Code](./samples/vision/mobilenetv4) |
-| **分类** | MobileOne | [Code](./samples/vision/mobileone) |
-| **分类** | RepGhost | [Code](./samples/vision/repghost) |
-| **分类** | RepVGG | [Code](./samples/vision/repvgg) |
-| **分类** | RepViT | [Code](./samples/vision/repvit) |
-| **分类** | ResNet | [Code](./samples/vision/resnet) |
-| **分类** | ResNeXt | [Code](./samples/vision/resnext) |
-| **分类** | VargConvNet | [Code](./samples/vision/vargconvnet) |
-| **检测** | FCOS | [Code](./samples/vision/fcos) |
-| **检测** | YOLOv5 | [Code](./samples/vision/yolov5) |
-| **Ultralytics YOLO** | YOLOv5u、YOLOv8、YOLOv9、YOLOv10、YOLO11、YOLO12、YOLO13、YOLO26 | [Code](./samples/vision/ultralytics_yolo)、[YOLO26](./samples/vision/ultralytics_yolo26) |
-| **实例分割** | YOLOE | [Code](./samples/vision/yoloe) |
-| **抠图** | MODNet | [Code](./samples/vision/modnet) |
-| **OCR** | PaddleOCR | [Code](./samples/vision/paddleocr) |
-| **识别** | LPRNet | [Code](./samples/vision/lprnet) |
-| **多模态** | CLIP | [Code](./samples/vision/clip) |
-| **多模态** | YOLOWorld | [Code](./samples/vision/yoloworld) |
-
-### 解决方案 Samples
-
-| 类别 | Sample | 路径 |
-| :--- | :--- | :---: |
-| **LLM 解决方案** | RDK LLM Solution | [Code](./samples/solutions/llm) |
-| **视频解决方案** | RDK Video Solution | [Code](./samples/solutions/video) |
-
----
+| 类别 | 模型名称 | 模型路径 | 支持平台 | 详情 |
+| :--- | :--- | :--- | :--- | :---: |
+| 图像分类 | ConvNeXt | `samples/vision/convnext` | RDK X5 | [详情](./samples/vision/convnext) |
+| 图像分类 | EdgeNeXt | `samples/vision/edgenext` | RDK X5 | [详情](./samples/vision/edgenext) |
+| 图像分类 | EfficientFormer | `samples/vision/efficientformer` | RDK X5 | [详情](./samples/vision/efficientformer) |
+| 图像分类 | EfficientFormerV2 | `samples/vision/efficientformerv2` | RDK X5 | [详情](./samples/vision/efficientformerv2) |
+| 图像分类 | EfficientNet | `samples/vision/efficientnet` | RDK X5 | [详情](./samples/vision/efficientnet) |
+| 图像分类 | EfficientViT | `samples/vision/efficientvit` | RDK X5 | [详情](./samples/vision/efficientvit) |
+| 图像分类 | FasterNet | `samples/vision/fasternet` | RDK X5 | [详情](./samples/vision/fasternet) |
+| 图像分类 | FastViT | `samples/vision/fastvit` | RDK X5 | [详情](./samples/vision/fastvit) |
+| 图像分类 | GoogLeNet | `samples/vision/googlenet` | RDK X5 | [详情](./samples/vision/googlenet) |
+| 图像分类 | MobileNetV1 | `samples/vision/mobilenetv1` | RDK X5 | [详情](./samples/vision/mobilenetv1) |
+| 图像分类 | MobileNetV2 | `samples/vision/mobilenetv2` | RDK X5 | [详情](./samples/vision/mobilenetv2) |
+| 图像分类 | MobileNetV3 | `samples/vision/mobilenetv3` | RDK X5 | [详情](./samples/vision/mobilenetv3) |
+| 图像分类 | MobileNetV4 | `samples/vision/mobilenetv4` | RDK X5 | [详情](./samples/vision/mobilenetv4) |
+| 图像分类 | MobileOne | `samples/vision/mobileone` | RDK X5 | [详情](./samples/vision/mobileone) |
+| 图像分类 | RepGhost | `samples/vision/repghost` | RDK X5 | [详情](./samples/vision/repghost) |
+| 图像分类 | RepVGG | `samples/vision/repvgg` | RDK X5 | [详情](./samples/vision/repvgg) |
+| 图像分类 | RepViT | `samples/vision/repvit` | RDK X5 | [详情](./samples/vision/repvit) |
+| 图像分类 | ResNet | `samples/vision/resnet` | RDK X5 | [详情](./samples/vision/resnet) |
+| 图像分类 | ResNeXt | `samples/vision/resnext` | RDK X5 | [详情](./samples/vision/resnext) |
+| 图像分类 | VargConvNet | `samples/vision/vargconvnet` | RDK X5 | [详情](./samples/vision/vargconvnet) |
+| 目标检测 | FCOS | `samples/vision/fcos` | RDK X5 | [详情](./samples/vision/fcos) |
+| 目标检测 | YOLOv5 | `samples/vision/yolov5` | RDK X5 | [详情](./samples/vision/yolov5) |
+| 目标检测 / 实例分割 / 姿态估计 / 图像分类 | Ultralytics YOLO（`YOLOv5u / YOLOv8 / YOLOv9 / YOLOv10 / YOLO11 / YOLO12 / YOLO13`） | `samples/vision/ultralytics_yolo` | RDK X5 | [详情](./samples/vision/ultralytics_yolo) |
+| 目标检测 / 实例分割 / 姿态估计 / 图像分类 | Ultralytics YOLO26 | `samples/vision/ultralytics_yolo26` | RDK X5 | [详情](./samples/vision/ultralytics_yolo26) |
+| 实例分割 | YOLOE | `samples/vision/yoloe` | RDK X5 | [详情](./samples/vision/yoloe) |
+| 图像抠图 | MODNet | `samples/vision/modnet` | RDK X5 | [详情](./samples/vision/modnet) |
+| OCR 文字检测与识别 | PaddleOCR | `samples/vision/paddleocr` | RDK X5 | [详情](./samples/vision/paddleocr) |
+| 车牌识别 | LPRNet | `samples/vision/lprnet` | RDK X5 | [详情](./samples/vision/lprnet) |
+| 图文多模态匹配 | CLIP | `samples/vision/clip` | RDK X5 | [详情](./samples/vision/clip) |
+| 开放词表目标检测 | YOLOWorld | `samples/vision/yoloworld` | RDK X5 | [详情](./samples/vision/yoloworld) |
 
 ## 文档说明与学习资源
 
@@ -187,7 +174,7 @@ python3 main.py \
 - **源码参考**
   - 如需了解代码级接口说明，请参考 **[源码文档说明](./docs/source_reference/README.md)**。
 - **开发规范**
-  - 如需新增或重构 Sample，请先阅读 **[Model Zoo 仓库规范指南](./docs/Model_Zoo_Repository_Guidelines.md)**。
+  - 如需新增或开发 Sample，请先阅读 **[Model Zoo 仓库规范指南](./docs/Model_Zoo_Repository_Guidelines.md)**。
 - **工具链文档**
   - [RDK X5 算法工具链文档](https://developer.d-robotics.cc/api/v1/fileData/x5_doc-v126cn/index.html)
   - [RDK X3 算法工具链文档](https://developer.d-robotics.cc/api/v1/fileData/horizon_xj3_open_explorer_cn_doc/index.html)
