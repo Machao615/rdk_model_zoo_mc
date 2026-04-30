@@ -109,16 +109,23 @@ rdk_model_zoo/
 1. **Check system version**: Ensure the target board is running `RDK OS >= 3.5.0`.
 2. **Connect hardware**: Ensure your RDK board is powered and network-connected. SSH or VSCode Remote SSH is recommended.
 3. **Read the model README first**: Always open the target directory `README.md` before running commands.
-4. **Run the sample**:
+4. **Run the Ultralytics YOLO11x detection sample**:
 
 ```bash
-cd samples/vision/yolov5/runtime/python
-bash run.sh
+cd samples/vision/ultralytics_yolo/model
+wget -nc https://archive.d-robotics.cc/downloads/rdk_model_zoo/rdk_x5/ultralytics_YOLO/yolo11x_detect_bayese_640x640_nv12.bin
+
+cd ../runtime/python
+python3 main.py \
+  --task detect \
+  --model-path ../../model/yolo11x_detect_bayese_640x640_nv12.bin \
+  --test-img ../../../../../datasets/coco/assets/bus.jpg \
+  --img-save-path ../../test_data/inference_yolo11x.jpg
 ```
 
 **Inference Result:**
 <div align="center">
-  <img src="docs/assets/demo_rdkx5_yolov10n_detect.jpg" width="80%" alt="Inference Result"/>
+  <img src="samples/vision/ultralytics_yolo/test_data/inference_yolo11x.jpg" width="80%" alt="YOLO11x Inference Result"/>
 </div>
 
 ---
