@@ -18,6 +18,20 @@ YOLO26 is a real-time vision model series from Ultralytics. This sample provides
 
 - **Official Implementation**: [ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
 
+### Algorithm Capabilities
+
+- Object detection
+- Instance segmentation
+- Pose estimation
+- Oriented bounding box detection
+- Image classification
+
+### Algorithm Features
+
+- **Unified multi-task entry**: `main.py` selects the task through `--task`.
+- **Fixed tensor protocol**: each task wrapper parses fixed input and output indexes without guessing output structures.
+- **NV12 input**: runtime feeds Y and UV planes as two HBM input tensors.
+
 ### Platform Notes
 
 - Target platforms: `RDK S100` / `RDK S100P`
@@ -52,7 +66,7 @@ YOLO26 is a real-time vision model series from Ultralytics. This sample provides
 
 ---
 
-## QuickStart
+## Quick Start
 
 For a quick experience, run the one-click script under `runtime/python`.
 
@@ -78,7 +92,7 @@ This sample provides pre-converted `.hbm` model files for RDK S100/S100P.
 
 ---
 
-## Runtime Inference
+## Runtime
 
 The current sample provides Python runtime implementation.
 
@@ -92,13 +106,13 @@ For detailed usage, refer to [runtime/python/README.md](./runtime/python/README.
 
 ---
 
-## Evaluator
+## Model Evaluation
 
 The `evaluator/` directory is used for task-level accuracy and result export verification. Refer to [evaluator/README.md](./evaluator/README.md) for details.
 
 ---
 
-## Validation Matrix
+## Inference Result
 
 The Python runtime provides `run.sh` coverage for the following `RDK S100` / `RDK S100P` `.hbm` models:
 
@@ -107,6 +121,8 @@ The Python runtime provides `run.sh` coverage for the following `RDK S100` / `RD
 - `pose`: `n`
 - `obb`: `n`
 - `cls`: `n`
+
+With the default test images, each task should produce boxes, masks, keypoints, oriented boxes, or classification labels that match the image content. Detailed benchmark data and result-check notes are maintained in [evaluator/README.md](./evaluator/README.md).
 
 ---
 

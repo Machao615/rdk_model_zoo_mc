@@ -26,6 +26,19 @@ YOLOv5u detect covers the public `yolov5nu/su/mu/lu/xu` model family.
 
 - **Official Implementation**: [ultralytics/ultralytics](https://github.com/ultralytics/ultralytics)
 
+### Algorithm Capabilities
+
+- Object detection
+- Instance segmentation
+- Pose estimation
+- Image classification
+
+### Algorithm Features
+
+- **Unified model-family entry**: `main.py` and `run.sh` select the model family and task.
+- **Task-specific wrappers**: detection, segmentation, pose, and classification use fixed wrappers instead of output-structure guessing.
+- **NV12 input**: runtime feeds Y and UV planes as two HBM input tensors.
+
 ### Platform Notes
 
 - Target platforms: `RDK S100` / `RDK S100P`
@@ -61,7 +74,7 @@ YOLOv5u detect covers the public `yolov5nu/su/mu/lu/xu` model family.
 
 ---
 
-## QuickStart
+## Quick Start
 
 For a quick experience, run the script under `runtime/python`.
 
@@ -90,7 +103,7 @@ This sample provides pre-converted `.hbm` models for RDK S100/S100P.
 
 ---
 
-## Runtime Inference
+## Runtime
 
 The current sample provides Python runtime implementation.
 
@@ -105,7 +118,7 @@ For detailed usage, refer to
 
 ---
 
-## Evaluator
+## Model Evaluation
 
 The `evaluator/` directory contains benchmark tables, accuracy references, and
 runtime validation records for the supported models.
@@ -114,7 +127,7 @@ Refer to [evaluator/README.md](./evaluator/README.md) for details.
 
 ---
 
-## Validation Matrix
+## Inference Result
 
 The Python runtime provides `run.sh` coverage for the following documented
 models on `RDK S100` / `RDK S100P`:
@@ -130,8 +143,7 @@ models on `RDK S100` / `RDK S100P`:
 
 This sample covers only Ultralytics YOLO families.
 
-Detailed benchmark data and validation summaries should be maintained in
-[evaluator/README.md](./evaluator/README.md).
+With the default test images, each task should produce boxes, masks, keypoints, or classification labels that match the image content. Detailed benchmark data and result-check notes are maintained in [evaluator/README.md](./evaluator/README.md).
 
 ---
 

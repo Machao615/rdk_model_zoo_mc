@@ -28,7 +28,7 @@ The script auto-detects the board and downloads models to `./nash-e/` or `./nash
 - All models use NV12 input (Y + UV as two separate tensors).
 - The model suffix differs by platform: `nashe` for S100, `nashm` for S100P.
 
-## Model List
+## Published Models
 
 ### Detection
 - `yolo26n_detect_{nashe|nashm}_640x640_nv12.hbm`

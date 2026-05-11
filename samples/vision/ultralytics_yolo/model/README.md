@@ -36,7 +36,7 @@ bash download_model.sh s100p yolov5u detect x
 - Main download URL base path: `https://archive.d-robotics.cc/downloads/rdk_model_zoo/rdk_s100/Ultralytics_YOLO_OE_3.7.0/{nash-e|nash-m}/`
 - `model_size` supports `n/s/m/l/x`; YOLOv10 also supports `b`.
 
-## Model List
+## Published Models
 
 ### Detection
 
