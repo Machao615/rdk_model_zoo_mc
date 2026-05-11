@@ -80,7 +80,7 @@ For detailed descriptions, usage, and examples of each model, click the correspo
 
 | Category | Model Name | Model Path | Supported Platforms | Details |
 |---|---|---|---|---|
-| Vision Multi-task | Ultralytics YOLO | samples/vision/ultralytics_yolo | S100 / S100P | [README](samples/vision/ultralytics_yolo/README.md) |
+| Vision Multi-task | Ultralytics YOLO (YOLOv5u / YOLOv8 / YOLOv10 / YOLO11 / YOLO12) | samples/vision/ultralytics_yolo | S100 / S100P | [README](samples/vision/ultralytics_yolo/README.md) |
 | Vision Multi-task | YOLO26 | samples/vision/ultralytics_yolo26 | S100 / S100P | [README](samples/vision/ultralytics_yolo26/README.md) |
 | Object Detection | YOLOv5x | samples/vision/yolov5 | S100 / S600 | [README](samples/vision/yolov5/README.md) |
 | Object Detection | YOLO11 | samples/vision/yolo11 | S100 / S600 | [README](samples/vision/yolo11/README.md) |

@@ -80,7 +80,7 @@ docs/Model_Zoo_User_Guide.md
 
 | 类别         | 模型名称      | 模型路径                        | 支持平台     | 详情 |
 |--------------|---------------|---------------------------------|-------------|------|
-| 视觉多任务   | Ultralytics YOLO | samples/vision/ultralytics_yolo | S100 / S100P | [README](samples/vision/ultralytics_yolo/README.md) |
+| 视觉多任务   | Ultralytics YOLO（YOLOv5u / YOLOv8 / YOLOv10 / YOLO11 / YOLO12） | samples/vision/ultralytics_yolo | S100 / S100P | [README](samples/vision/ultralytics_yolo/README.md) |
 | 视觉多任务   | YOLO26        | samples/vision/ultralytics_yolo26 | S100 / S100P | [README](samples/vision/ultralytics_yolo26/README.md) |
 | 目标检测     | YOLOv5x       | samples/vision/yolov5           | S100 / S600 | [README](samples/vision/yolov5/README.md) |
 | 目标检测     | YOLO11        | samples/vision/yolo11           | S100 / S600 | [README](samples/vision/yolo11/README.md) |
