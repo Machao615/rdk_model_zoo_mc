@@ -74,7 +74,16 @@ pip install numpy opencv-python hbm-runtime scipy
 
 ## 任务示例
 
-### YOLOv8 实例分割
+### 目标检测
+
+```bash
+python3 main.py \
+    --task detect \
+    --model-path ../../model/nash-e/yolo11n_detect_nashe_640x640_nv12.hbm \
+    --test-img ../../test_data/bus.jpg
+```
+
+### 实例分割
 
 ```bash
 python3 main.py \
@@ -83,7 +92,7 @@ python3 main.py \
     --test-img ../../test_data/bus.jpg
 ```
 
-### YOLOv10 目标检测（无 NMS）
+### 无 NMS 目标检测 (YOLOv10)
 
 ```bash
 python3 main.py \
@@ -92,12 +101,21 @@ python3 main.py \
     --test-img ../../test_data/bus.jpg
 ```
 
-### YOLO11 姿态估计
+### 姿态估计
 
 ```bash
 python3 main.py \
     --task pose \
     --model-path ../../model/nash-e/yolo11n_pose_nashe_640x640_nv12.hbm \
+    --test-img ../../test_data/bus.jpg
+```
+
+### 图像分类
+
+```bash
+python3 main.py \
+    --task cls \
+    --model-path ../../model/nash-e/yolo11n_cls_nashe_640x640_nv12.hbm \
     --test-img ../../test_data/bus.jpg
 ```
 
@@ -112,10 +130,10 @@ python3 main.py \
 
 ## 接口说明
 
-- **`Yolo*Config`**：封装各任务的模型路径和运行参数。
-- **`Yolo*`**：提供完整推理流水线，包括 `pre_process`、`forward`、`post_process` 和 `predict`。
+- **`Yolo*Config`**: 封装了每个任务的模型路径和运行时参数。
+- **`Yolo*`**: 提供完整的推理流水线，包括 `pre_process`, `forward`, `post_process` 和 `predict`。
 
-每个封装类遵循标准接口：
+每个封装类都遵循标准接口：
 
 ```python
 class Wrapper:
@@ -138,3 +156,8 @@ class Wrapper:
 | cls     | `[(class_id, probability), ...]` — 元组列表                        |
 
 通用预处理、后处理和可视化工具请参考 `utils/py_utils/` 目录。
+
+## 代码文档
+
+有关详细的 API 参考和代码级文档，请参阅[源码参考指南](../../../../docs/source_reference/README.md)。
+

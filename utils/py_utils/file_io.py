@@ -151,15 +151,16 @@ def load_labels(label_path: str) -> dict:
         with open(label_path, 'r', encoding='utf-8') as f:
             content = f.read().strip()
 
-        if content.startswith('{'):
+        if content.startswith('{') or content.startswith('['):
             try:
                 labels = json.loads(content)
             except Exception:
                 labels = ast.literal_eval(content)
+
             if isinstance(labels, dict):
                 labels = {int(k): v for k, v in labels.items()}
             elif isinstance(labels, list):
-                labels = {i: name for i, name in enumerate(labels)}
+                labels = {i: str(name) for i, name in enumerate(labels)}
         else:
             lines = [line.strip() for line in content.split('\n') if line.strip()]
             labels = {i: name for i, name in enumerate(lines)}
@@ -171,39 +172,5 @@ def load_labels(label_path: str) -> dict:
 
 
 def load_imagenet_labels(path: str) -> dict:
-    """Load ImageNet labels from a file.
-
-    This function attempts to load labels that might be stored as a Python
-    dictionary string (e.g., "{0: 'label'}") or as a plain text file where
-    each line corresponds to a label index.
-
-    Args:
-        path: Path to the label file.
-
-    Returns:
-        A dictionary mapping class indices (int) to label strings.
-        Returns an empty dictionary if loading fails or file not found.
-    """
-    if not os.path.exists(path):
-        return {}
-
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            content = f.read().strip()
-
-            if content.startswith('{') or content.startswith('['):
-                try:
-                    parsed = json.loads(content)
-                except Exception:
-                    parsed = ast.literal_eval(content)
-
-                if isinstance(parsed, dict):
-                    return {int(k): v for k, v in parsed.items()}
-                if isinstance(parsed, list):
-                    return {i: str(label) for i, label in enumerate(parsed)}
-
-            # Fallback: assume one label per line
-            return {i: line.strip() for i, line in enumerate(content.split('\n')) if line.strip()}
-    except Exception as e:
-        print(f"Warning: Failed to load ImageNet labels from {path}: {e}")
-        return {}
+    """(Deprecated) Alias for load_labels. Use load_labels instead."""
+    return load_labels(path)

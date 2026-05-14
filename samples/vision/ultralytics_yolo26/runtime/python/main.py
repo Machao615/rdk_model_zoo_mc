@@ -176,7 +176,7 @@ def main() -> None:
         results = model.predict(img)
         label_path = (opt.label_file or
                       '../../../../../datasets/imagenet/imagenet_classes.names')
-        idx2label = file_io.load_imagenet_labels(label_path)
+        idx2label = file_io.load_labels(label_path)
         visualize.print_classification_results(results, idx2label)
 
     elif opt.task == 'obb':

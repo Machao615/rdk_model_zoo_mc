@@ -39,7 +39,7 @@ sudo docker run --rm hello-world
 
 ### 2. 获取并加载离线镜像
 
-请访问 [D-Robotics 开发者文档](https://developer.d-robotics.cc/rdk_doc/rdk_s/Advanced_development/toolchain_development/overview#docker-%E9%95%9C%E5%83%8F) 下载适配 RDK S100 系列的 CPU 版本 Docker 镜像。
+请访问 [D-Robotics 开发者文档](https://developer.d-robotics.cc/rdk_doc/rdk_s/Advanced_development/toolchain_development/overview#docker-%E9%95%9C%E5%83%8F) 下载适配 RDK S100 系列的 CPU 版本 Docker镜像。
 
 ```bash
 sudo docker load -i ai_toolchain_ubuntu_22_s100_xxx.tar
@@ -65,23 +65,48 @@ sudo docker run -it --rm \
 `<docker-image-name>` 可通过 `sudo docker images` 查看加载后的镜像名称和标签。
 ## 转换流程
 
-### 1. 导出 ONNX
+### 1. 环境准备与模型训练
+
+注：模型训练与 ONNX 导出操作应在具有硬件加速（如 NVIDIA GPU）的 x86 机器上进行。推荐使用 Ubuntu 22.04, Python 3.10 环境。
+
+1. **配置环境**：
+   YOLO26 基于 `ultralytics` 框架。请参考 [Ultralytics 官方文档](https://docs.ultralytics.com/quickstart/) 配置训练环境。
+   ```bash
+   git clone https://github.com/ultralytics/ultralytics.git
+   cd ultralytics
+   pip install -e .
+   ```
+
+2. **模型训练**：
+   参考 [Ultralytics 训练指南](https://docs.ultralytics.com/modes/train/) 完成模型训练。训练过程中无需针对 BPU 修改模型结构。
+
+3. **获取权重**：
+   使用训练得到的 `.pt` 权重文件。
+
+### 2. 导出 ONNX
+
+**重要提示**：ONNX 导出必须在安装了 `ultralytics` 及其所有依赖的训练/开发环境中进行，**严禁在板端执行此步骤**。
 
 根据任务类型选择 `onnx_export/` 下的导出脚本，生成与 BPU 后处理协议匹配的 ONNX：
 
 ```bash
+# 目标检测
 python3 onnx_export/export_yolo26_detect_bpu.py --weights yolo26n.pt --imgsz 640
+# 实例分割
 python3 onnx_export/export_yolo26_seg_bpu.py --weights yolo26n-seg.pt --imgsz 640
+# 姿态估计
 python3 onnx_export/export_yolo26_pose_bpu.py --weights yolo26n-pose.pt --imgsz 640
+# 旋转框检测 (OBB)
 python3 onnx_export/export_yolo26_obb_bpu.py --weights yolo26n-obb.pt --imgsz 640
+# 图像分类
 python3 onnx_export/export_yolo26_cls_bpu.py --weights yolo26n-cls.pt --imgsz 224
 ```
 
-如脚本参数随上游 YOLO26 版本变化，请以 `python3 <script> -h` 输出为准。
+导出的 ONNX 模型会自动包含适配 BPU 的后处理转换逻辑（如 DFL 节点提取等）。导出的 ONNX 模型会保存在 `.pt` 模型同级目录下。
 
-### 2. 准备校准数据
+### 3. 准备校准数据
 
-准备 20 到 50 张覆盖目标场景的 `.jpg` 或 `.png` 图片：
+准备 20 到 50 张覆盖目标场景的 `.jpg` 或 `.png` 图片（建议使用训练集的子集）：
 
 ```text
 cal_images/
@@ -90,7 +115,7 @@ cal_images/
 └── ...
 ```
 
-### 3. 编译 HBM 模型
+### 4. 编译 HBM 模型 (mapper)
 
 进入当前目录后运行 `mapper.py`。`--march` 用于选择目标架构：
 
@@ -111,7 +136,7 @@ python3 mapper.py --onnx yolo26n_detect.onnx --cal-images ./cal_images --march n
 
 模型文件需放入 sample 的 `model/nash-e/` 或 `model/nash-m/` 目录，供 `runtime/python/run.sh` 和 `runtime/python/main.py` 使用。
 
-### 4. 脚本参数说明
+### 5. 脚本参数说明
 
 ```bash
 python3 mapper.py -h

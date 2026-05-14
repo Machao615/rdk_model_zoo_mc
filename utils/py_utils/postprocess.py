@@ -39,18 +39,7 @@ import cv2
 import numpy as np
 from hbm_runtime import QuantParams
 from scipy.special import softmax
-
-
-def sigmoid(x: np.ndarray) -> np.ndarray:
-    """Apply the sigmoid activation function element-wise.
-
-    Args:
-        x: Input tensor in logit space.
-
-    Returns:
-        Tensor converted to probability space.
-    """
-    return 1.0 / (1.0 + np.exp(-x))
+from .nn_math import sigmoid
 
 
 def recover_to_original_size(img: np.ndarray,

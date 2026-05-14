@@ -138,3 +138,7 @@ class Wrapper:
 | cls    | `[(class_id, probability), ...]` — list of tuples                    |
 
 Refer to the shared utilities under `utils/py_utils/` for common pre-processing, post-processing, and visualization helpers.
+
+## Code Documentation
+
+For detailed API references and code-level documentation, refer to the [source reference guide](../../../../docs/source_reference/README.md).

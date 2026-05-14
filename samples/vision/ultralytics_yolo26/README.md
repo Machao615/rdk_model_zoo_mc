@@ -126,6 +126,14 @@ With the default test images, each task should produce boxes, masks, keypoints, 
 
 ---
 
+## Inference Results
+
+With the default test images, the task produces visualization results in `test_data/`.
+
+![Detection Result](./test_data/result_detect.jpg)
+
+---
+
 ## License
 
 Follows the Model Zoo top-level License.
