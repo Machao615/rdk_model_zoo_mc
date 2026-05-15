@@ -224,14 +224,10 @@ class YoloE11Seg:
                      ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, List[np.ndarray]]:
         """Convert raw model outputs into instance segmentation results.
 
-        Steps:
-        1) Dequantize all output tensors.
-        2) For each detection scale, filter by logit threshold and decode DFL
-           boxes and MCES mask coefficients.
-        3) Concatenate results, apply NMS.
-        4) Decode per-instance binary masks from prototype features and MCES.
-        5) Rescale boxes to original image dimensions.
-        6) Resize masks to their bounding boxes.
+        The method dequantizes the outputs, decodes boxes and mask coefficients
+        for each detection scale, applies NMS, reconstructs instance masks from
+        prototype features, rescales boxes to the original image size, and
+        resizes masks to their bounding boxes.
 
         Args:
             outputs: Raw output tensors from inference (as returned by `forward()`).
@@ -241,11 +237,7 @@ class YoloE11Seg:
             nms_thres: IoU threshold for NMS override. If `None`, uses config value.
 
         Returns:
-            A tuple containing:
-                - boxes: Bounding boxes with shape `(N, 4)`, format `[x1, y1, x2, y2]`.
-                - scores: Confidence scores with shape `(N,)`.
-                - cls_ids: Class indices with shape `(N,)`.
-                - masks: List of N binary mask arrays, each sized to its bounding box.
+            Tuple of `(boxes, scores, cls_ids, masks)`.
         """
         score_thres = score_thres if score_thres is not None else self.cfg.score_thres
         nms_thres = nms_thres if nms_thres is not None else self.cfg.nms_thres
@@ -329,11 +321,7 @@ class YoloE11Seg:
             nms_thres: IoU threshold override for NMS.
 
         Returns:
-            A tuple containing:
-                - boxes: Bounding boxes with shape `(N, 4)`.
-                - scores: Confidence scores with shape `(N,)`.
-                - cls_ids: Class indices with shape `(N,)`.
-                - masks: List of N per-instance binary mask arrays.
+            Tuple of `(boxes, scores, cls_ids, masks)`.
         """
         ori_img_h, ori_img_w = img.shape[:2]
 
