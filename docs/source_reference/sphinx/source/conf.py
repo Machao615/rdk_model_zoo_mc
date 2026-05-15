@@ -28,10 +28,10 @@ autosummary_generate = True
 # 指向你的 Python 代码根目录（可以多个）
 # 建议写绝对路径，避免相对路径踩坑
 DOCS_DIR = Path(__file__).resolve().parent
-REPO_ROOT = DOCS_DIR.parents[3]  # 指向 rdk_model_zoo_mc 根目录
+REPO_ROOT = DOCS_DIR.parents[3]  # 按你的 docs 层级改
 autoapi_dirs = [
-    str(REPO_ROOT / "samples"),   # 你的 python 在 samples 下
-    str(REPO_ROOT / "utils"),     # utils 目录
+    str(REPO_ROOT / "samples"),   # 举例：你的 python 在 samples 下
+    str(REPO_ROOT / "utils"),     # 举例：也可以加第二个根目录
 ]
 
 print("AUTOAPI DIRS:", autoapi_dirs)
